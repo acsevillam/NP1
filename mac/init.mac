@@ -1,0 +1,51 @@
+# Macro file for NP1
+#
+
+##################### G4State_PreInit ###################
+
+# ================== Analysis settings ==================
+
+/analysis/setFileName data/NP1
+
+/analysis/setActivation true
+
+# Switch on/off histograming
+/analysis/setHistoDirName histograms
+/analysis/h1/setActivationToAll true 
+
+# Switch on/off ntupling
+/analysis/setNtupleDirName ntuples
+/analysis/ntuple/setActivationToAll true
+
+# =================== Physics settings ==================
+#/NP1/physics/addPhysics emstandard_opt0
+
+################## Kernel initialization ################
+
+/run/initialize
+
+#####################  G4State_Idle #####################
+
+# ================== Analysis settings ==================
+
+/analysis/verbose 0
+/control/verbose 0
+/process/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+# =================== Physics settings ==================
+
+/process/em/fluo true
+/process/em/auger true
+/process/em/augerCascade true
+/process/em/pixe true
+/process/em/deexcitationIgnoreCut true
+/process/em/lowestElectronEnergy 0 eV
+/process/em/printParameters
+
+# ==================== Setup settings ==================
+
+#/control/execute mac/multiple_nanoparticles.mac
+/control/execute mac/single_nanoparticle.mac

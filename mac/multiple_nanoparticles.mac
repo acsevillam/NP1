@@ -1,0 +1,56 @@
+# Macro file for NP1
+#
+
+##################### G4State_PreInit ###################
+
+# ===================== NPs settings ===================
+
+# Nano-particle coating material
+/NP1/geometry/SetNanoParticleCoatingMaterial G4_Au # candidates: G4_Au G4_Ag Dextran_70 PEG_3500 TiO2
+
+# Nano-particle coating thickness
+/NP1/geometry/SetNanoParticleCoatingThickness 0 nm
+
+# Nano-particle material
+/NP1/geometry/SetNanoParticleMaterial G4_Au # candidates: G4_Au G4_Ag G4_Pt G4_Pb Ta2O5 Bi2S3
+
+# Nano-particle radius
+/NP1/geometry/SetNanoParticleRadius 10 nm
+
+# ==================== Phantom settings ====================
+
+# Set concentration
+/NP1/geometry/SetConcentration 20 mg/g
+
+# Set nano-particles array size
+/NP1/geometry/SetVoxelsXNo 10
+/NP1/geometry/SetVoxelsYNo 10
+/NP1/geometry/SetVoxelsZNo 10
+
+# ==================== Beam settings ====================
+
+# square plane
+/control/execute beam/square_plane.mac
+/NP1/source/SetSquareBeamTo waterBox_phys
+
+# circular plane
+#/control/execute beam/circular_plane.mac
+#/gps/pos/radius 10 nm
+
+# 40keV beam
+#/control/execute beam/40keV.mac
+
+# RX 40kVp beam
+/control/execute beam/RX40kVp.mac
+
+# RX 100kVp beam
+#/control/execute beam/RX100kVp.mac
+
+# RX 180kVp beam
+#/control/execute beam/RX180kVp.mac
+
+# Co-60 beam
+#/control/execute beam/Co-60.mac
+
+# Gamma accelerator 6MV beam
+#/control/execute beam/GammaAccelerator6MV.mac

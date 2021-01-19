@@ -1,0 +1,13 @@
+# Beam file for NP1
+# 
+# I-131 source
+
+# I-131 beam
+/control/execute beam/I-131_gamma_1.mac
+/control/execute beam/spherical_surface.mac
+/gps/pos/radius 1 um
+
+# I-131 beam
+/control/execute beam/I-131_gamma_2.mac
+/control/execute beam/spherical_surface.mac
+/gps/pos/radius 1 um

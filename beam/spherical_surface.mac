@@ -1,0 +1,8 @@
+# Beam file for NP1
+#
+/gps/pos/type Surface
+/gps/pos/shape Sphere
+/gps/pos/centre 0. 0. 0. mm
+/gps/pos/radius 10 nm
+/gps/ang/type focused
+/gps/ang/focuspoint 0. 0. 0. mm

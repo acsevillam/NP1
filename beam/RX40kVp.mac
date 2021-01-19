@@ -1,0 +1,8 @@
+# Beam file for NP1
+# 
+# Gamma Beam
+/gps/particle gamma
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/file beam/x-ray-spectrum-geant4-40kV.dat
+/gps/hist/inter Lin
