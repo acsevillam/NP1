@@ -1,6 +1,0 @@
-# Beam file for NP1
-#
-/gps/pos/type Volume
-/gps/pos/shape Sphere
-/gps/pos/centre 0. 0. 0. mm
-/gps/pos/confine shell_phys

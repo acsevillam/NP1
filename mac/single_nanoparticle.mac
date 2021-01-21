@@ -6,13 +6,13 @@
 # ===================== NPs settings ===================
 
 # Nano-particle coating material
-/NP1/geometry/SetNanoParticleCoatingMaterial G4_Gd # candidates: G4_Au G4_Ag Dextran_70 PEG_3500 TiO2
+/NP1/geometry/SetNanoParticleCoatingMaterial G4_Au # candidates: G4_Au G4_Ag Dextran_70 PEG_3500 TiO2
 
 # Nano-particle coating thickness
 /NP1/geometry/SetNanoParticleCoatingThickness 0 nm
 
 # Nano-particle material
-/NP1/geometry/SetNanoParticleMaterial G4_Gd # candidates: G4_Au G4_Ag G4_Pt G4_Pb Ta2O5 Bi2S3
+/NP1/geometry/SetNanoParticleMaterial G4_Au # candidates: G4_Au G4_Ag G4_Pt G4_Pb Ta2O5 Bi2S3
 
 # Nano-particle radius
 /NP1/geometry/SetNanoParticleRadius 5 nm
@@ -37,14 +37,14 @@
 #/NP1/source/SetSquareBeamTo waterBox_phys
 
 # circular plane
-#/control/execute beam/circular_plane.mac
-#/gps/pos/radius 5 nm
+/control/execute beam/circular_plane.mac
+/gps/pos/radius 5 nm
 
 # 40keV beam
 #/control/execute beam/40keV.mac
 
 # RX 40kVp beam
-#/control/execute beam/RX40kVp.mac
+/control/execute beam/RX40kVp.mac
 
 # RX 100kVp beam
 #/control/execute beam/RX100kVp.mac
@@ -57,17 +57,3 @@
 
 # Gamma accelerator 6MV beam
 #/control/execute beam/GammaAccelerator6MV.mac
-
-# Spherical volume
-#/control/execute beam/spherical_volume.mac
-#/gps/pos/radius 10 nm
-
-# Sphere surface
-#/control/execute beam/spherical_surface.mac
-#/gps/pos/radius 10 nm
-
-# I-131 beam
-#/control/execute beam/I-131_1.mac
-
-# I-131 beam
-/control/execute beam/I-131_2.mac

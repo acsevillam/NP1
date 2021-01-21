@@ -74,15 +74,9 @@ set(NP1_SCRIPTS
   beam/x-ray-spectrum-geant4-100kV.dat
   beam/x-ray-spectrum-geant4-180kV.dat
   beam/Co-60.mac
-  beam/I-131_1.mac
-  beam/I-131_2.mac
-  beam/I-131_gamma_1.mac
-  beam/I-131_gamma_2.mac
   beam/GammaAccelerator6MV.mac
   beam/square_plane.mac
   beam/circular_plane.mac
-  beam/spherical_surface.mac
-  beam/spherical_volume.mac
   data/README
   log/README
   plotHisto.C
