@@ -1,0 +1,109 @@
+# Macro file for NP1
+#
+
+##################### G4State_PreInit ###################
+
+# ================== Analysis settings ==================
+
+/analysis/setFileName data/%%FileName%%
+
+/analysis/setActivation true
+
+# Switch on/off histograming
+/analysis/setHistoDirName histograms
+/analysis/h1/setActivationToAll true 
+
+# Switch on/off ntupling
+/analysis/setNtupleDirName ntuples
+/analysis/ntuple/setActivationToAll true
+
+# =================== Physics settings ==================
+#/NP1/physics/addPhysics emstandard_opt0
+
+################## Kernel initialization ################
+
+/run/initialize
+
+#####################  G4State_Idle #####################
+
+# ================== Analysis settings ==================
+
+/analysis/verbose 0
+/control/verbose 0
+/process/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+# =================== Physics settings ==================
+
+/process/em/fluo true
+/process/em/auger true
+/process/em/augerCascade true
+/process/em/pixe true
+/process/em/deexcitationIgnoreCut true
+/process/em/lowestElectronEnergy 0 eV
+/process/em/printParameters
+
+# ===================== NPs settings ===================
+
+# Nano-particle coating material
+/NP1/geometry/SetNanoParticleCoatingMaterial %%ParticleCoatingMaterial%% # candidates: G4_Au G4_Ag Dextran_70 PEG_3500 TiO2
+
+# Nano-particle coating thickness
+/NP1/geometry/SetNanoParticleCoatingThickness %%ParticleCoatingThickness%% %%ParticleCoatingThicknessUnit%%
+
+# Nano-particle material
+/NP1/geometry/SetNanoParticleMaterial %%ParticleMaterial%% # candidates: G4_Au G4_Ag G4_Pt G4_Pb Ta2O5 Bi2S3
+
+# Nano-particle radius
+/NP1/geometry/SetNanoParticleRadius %%ParticleRadius%% %%ParticleRadiusUnit%%
+
+# ==================== Phantom settings ====================
+
+# Set concentration
+/NP1/geometry/SetConcentration %%Concentration%% %%ConcentrationUnit%%
+
+# Set nano-particles array size
+/NP1/geometry/SetVoxelsXNo %%VoxelsXNo%%
+/NP1/geometry/SetVoxelsYNo %%VoxelsYNo%%
+/NP1/geometry/SetVoxelsZNo %%VoxelsZNo%%
+
+# Set water voxel size
+/NP1/geometry/SetWaterVoxelSideLength %%WaterVoxelSideLength%% %%WaterVoxelSideLengthUnit%%
+
+# ==================== Beam settings ====================
+
+# square shape beam
+%%SquareShapeBeam%%/control/execute beam/square_plane.mac
+%%SquareShapeBeam%%/NP1/source/SetSquareBeamTo waterBox_phys
+
+# circular shape beam
+%%CircularShapeBeam%%/control/execute beam/circular_plane.mac
+%%CircularShapeBeam%%/gps/pos/radius %%BeamRadius%% %%BeamRadiusUnit%%
+
+# spherical volume source
+%%SphericalVolumeSource%%/control/execute beam/spherical_volume.mac
+%%SphericalVolumeSource%%/gps/pos/radius %%BeamRadius%% %%BeamRadiusUnit%%
+
+# spherical surface source
+%%SphericalSurfaceSource%%/control/execute beam/spherical_surface.mac
+%%SphericalSurfaceSource%%/gps/pos/radius %%BeamRadius%% %%BeamRadiusUnit%%
+
+# beam macro file
+/control/execute %%BeamMacroFile%%
+
+# ==================== Beam settings ====================
+
+# SetX Histos
+/analysis/h1/setX 0 %%Histo1D0X%%
+/analysis/h1/setX 1 %%Histo1D1X%%
+/analysis/h1/setX 2 %%Histo1D2X%%
+/analysis/h1/setX 3 %%Histo1D3X%%
+/analysis/h1/setX 4 %%Histo1D4X%%
+/analysis/h1/setX 5 %%Histo1D5X%%
+/analysis/h1/setX 6 %%Histo1D6X%%
+/analysis/h1/setX 7 %%Histo1D7X%%
+/analysis/h1/setX 8 %%Histo1D8X%%
+/analysis/h1/setX 9 %%Histo1D9X%%
+/analysis/h1/setX 10 %%Histo1D10X%%
