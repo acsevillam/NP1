@@ -167,7 +167,7 @@ void NP1RunAction::EndOfRunAction(const G4Run* run)
 		<< G4endl
 		<< "     " << G4BestUnit(TotalEdep/nofEvents/mass,"Dose") << " +/- " << G4BestUnit(rmsTotalEdep/nofEvents/mass,"Dose")
 		<< G4endl
-		<< "     [Total Edep in water box / mass of water box / Total events per run (1)]"
+		<< "     [Total Edep in water box per event (3) / mass of water box ]"
 		<< G4endl;
 
 		G4cout
@@ -286,13 +286,13 @@ void NP1RunAction::CreateHistos(){
 	analysisManager->SetH1XAxisTitle(3,"Distance from nano-particle center [No.]");
 	analysisManager->SetH1YAxisTitle(3,"DoseDep in "+G4String(G4BestUnit(waterSphereArray_dr,"Length"))+" shell of water per event [keV]");
 	// id = 4
-	analysisManager->CreateH1("EnergyDepositPerGoodEvent","Energy deposit per good event distribution", 1000, 0., 40*keV, "keV");
+	analysisManager->CreateH1("NumberOfSecondariesPerGoodEvent","Number of secondaries generated per good event distribution", 10, 1, 10);
 	analysisManager->SetH1Activation(4,false);
 	// id = 5
-	analysisManager->CreateH1("DosePerGoodEvent","Dose per good event distribution", 1000, 0, 1E-3*gray, "microGy");
+	analysisManager->CreateH1("EnergyDepositPerGoodEvent","Energy deposit per good event distribution", 1000, 0., 40*keV, "keV");
 	analysisManager->SetH1Activation(5,false);
 	// id = 6
-	analysisManager->CreateH1("NumberOfSecondariesPerGoodEvent","Number of secondaries generated per good event distribution", 10, 1, 10);
+	analysisManager->CreateH1("DosePerGoodEvent","Dose per good event distribution", 1000, 0, 1E-3*gray, "microGy");
 	analysisManager->SetH1Activation(6,false);
 	// id = 7
 	analysisManager->CreateH1("SecondariesSpectrumAtVertex","Secondaries' energy distribution at vertex", 1000, 0, 40*keV,"keV");

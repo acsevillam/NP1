@@ -92,18 +92,15 @@ void NP1EventAction::EndOfEventAction(const G4Event* /*anEvent*/)
 	// accumulate statistics in run action
 	// Analysis manager
 
-	fRunAction->CountGoodEvent(1.0);
-
 	if(fTotalEdep>0.){
 		fRunAction->AddTotalEdep(fTotalEdep);
 		fRunAction->CountEdepEvent();
-
-		//G4cout<<"\t"<<G4BestUnit(fTotalEdep,"Energy")<<G4endl;
-		analysisManager->FillH1(4,fTotalEdep);
-		analysisManager->FillH1(5,fTotalEdep/mass);
 	}
-	if(fNumberOfSecondaries>0.){
-		analysisManager->FillH1(6,fNumberOfSecondaries);
+	if(fNumberOfSecondaries>0. && fTotalEdep>0.){
+		fRunAction->CountGoodEvent(1.0);
+		analysisManager->FillH1(4,fNumberOfSecondaries);
+		analysisManager->FillH1(5,fTotalEdep);
+		analysisManager->FillH1(6,fTotalEdep/mass);
 	}
 
 }

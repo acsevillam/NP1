@@ -43,9 +43,9 @@ class NP1RunAction : public G4UserRunAction
     void CreateHistos();
     void CreateNTuples();
 
-    void CountEdepEvent(){ fEDepEvents++; };
+    inline void CountEdepEvent(){ fEDepEvents++; };
     inline void AddTotalEdep(G4double Edep) {fTotalEdep+=Edep; fTotalEdep2+=Edep*Edep;}
-    void CountGoodEvent(G4double goodEvents){ fGoodEvents += goodEvents; };
+    inline void CountGoodEvent(G4double goodEvents){ fGoodEvents += goodEvents; };
 
 private:
     G4Accumulable<G4int>    			fEDepEvents;
