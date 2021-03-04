@@ -38,13 +38,13 @@ NP1DetectorMessenger::NP1DetectorMessenger(NP1DetectorConstruction* aNP1Detector
 	fUIcmdWithAStringCollection["SetNanoParticleMaterial"] = new G4UIcmdWithAString("/NP1/geometry/SetNanoParticleMaterial",this) ;
 	fUIcmdWithAStringCollection["SetNanoParticleMaterial"] -> SetGuidance("Set the nano-particle material");
 	fUIcmdWithAStringCollection["SetNanoParticleMaterial"] -> SetParameterName("Material",false);
-	fUIcmdWithAStringCollection["SetNanoParticleMaterial"] -> SetCandidates("G4_Au G4_Ag G4_Pt G4_Pb G4_Gd Ta2O5 Bi2S3");
+	fUIcmdWithAStringCollection["SetNanoParticleMaterial"] -> SetCandidates("G4_Au G4_Ag G4_Pt G4_Pb G4_Gd Ta2O5 Bi2S3 G4_WATER");
 	fUIcmdWithAStringCollection["SetNanoParticleMaterial"] -> AvailableForStates(G4State_PreInit, G4State_Idle);
 
 	fUIcmdWithAStringCollection["SetNanoParticleCoatingMaterial"] = new G4UIcmdWithAString("/NP1/geometry/SetNanoParticleCoatingMaterial",this) ;
 	fUIcmdWithAStringCollection["SetNanoParticleCoatingMaterial"] -> SetGuidance("Set the nano-particle coating material");
 	fUIcmdWithAStringCollection["SetNanoParticleCoatingMaterial"] -> SetParameterName("Material",false);
-	fUIcmdWithAStringCollection["SetNanoParticleCoatingMaterial"] -> SetCandidates("G4_Au G4_Ag G4_Gd Dextran_70 PEG_3500 TiO2");
+	fUIcmdWithAStringCollection["SetNanoParticleCoatingMaterial"] -> SetCandidates("G4_Au G4_Ag G4_Pt G4_Pb G4_Gd Ta2O5 Bi2S3 G4_WATER Dextran_70 PEG_3500");
 	fUIcmdWithAStringCollection["SetNanoParticleCoatingMaterial"] -> AvailableForStates(G4State_PreInit, G4State_Idle);
 
 	fUIcmdWithADoubleAndUnitCollection["SetWaterVoxelSideLength"] = new G4UIcmdWithADoubleAndUnit("/NP1/geometry/SetWaterVoxelSideLength",this) ;

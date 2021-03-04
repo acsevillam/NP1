@@ -64,7 +64,6 @@ class NP1DetectorConstruction : public G4VUserDetectorConstruction
 
   private:
     void SetupGeometry(G4LogicalVolume* motherVolume);
-	void SetupBiasing();
     vector<G4LogicalVolume*>  		fScoringVolumeVector;
 	G4UImessenger* 	 				fNP1DetectorMessenger ;
 	G4VPhysicalVolume* 				fParticle_phys;

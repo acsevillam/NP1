@@ -6,16 +6,16 @@
 # ===================== NPs settings ===================
 
 # Nano-particle coating material
-/NP1/geometry/SetNanoParticleCoatingMaterial G4_Au # candidates: G4_Au G4_Ag Dextran_70 PEG_3500 TiO2
+/NP1/geometry/SetNanoParticleCoatingMaterial G4_Au
 
 # Nano-particle coating thickness
 /NP1/geometry/SetNanoParticleCoatingThickness 0 nm
 
 # Nano-particle material
-/NP1/geometry/SetNanoParticleMaterial G4_Au # candidates: G4_Au G4_Ag G4_Pt G4_Pb Ta2O5 Bi2S3
+/NP1/geometry/SetNanoParticleMaterial G4_Au
 
 # Nano-particle radius
-/NP1/geometry/SetNanoParticleRadius 5 nm
+/NP1/geometry/SetNanoParticleRadius 10 nm
 
 # ==================== Phantom settings ====================
 
@@ -38,7 +38,10 @@
 
 # circular plane
 /control/execute beam/circular_plane.mac
-/gps/pos/radius 5 nm
+/gps/pos/radius 10 nm
+
+
+# ==================== Gamma Beam ====================
 
 # 40keV beam
 #/control/execute beam/40keV.mac
@@ -57,3 +60,27 @@
 
 # Gamma accelerator 6MV beam
 #/control/execute beam/GammaAccelerator6MV.mac
+
+# ==================== Proton Beam ====================
+
+# 100keV beam
+#/gps/pos/centre 0. 0. -20 nm
+#/control/execute beam/proton_100keV.mac
+
+# 1MeV beam
+#/gps/pos/centre 0. 0. -20 nm
+#/control/execute beam/proton_1MeV.mac
+
+# 10MeV beam
+#/gps/pos/centre 0. 0. -20 nm
+#/control/execute beam/proton_10MeV.mac
+
+# 100MeV beam
+#/gps/pos/centre 0. 0. -20 nm
+#/control/execute beam/proton_100MeV.mac
+
+# ==================== Readout settings ====================
+
+/analysis/h1/setX 0 100 0 10 um
+/analysis/h1/setX 2 100 0 10 um
+

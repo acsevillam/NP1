@@ -65,13 +65,14 @@ void NP1SteppingAction::UserSteppingAction(const G4Step* aStep)
 
 	if(!IsScoringVolume) return;
 
-	G4String ParticleName				= aStep->GetTrack()->GetDefinition()->GetParticleName();
-	G4double TotalEnergyDeposit 		= aStep->GetTotalEnergyDeposit();
-	G4double KineticEnergy				= aStep->GetPreStepPoint()->GetKineticEnergy();
-	G4double mass						= currentVolume->GetMass();
-	G4double TotalDose					= TotalEnergyDeposit/mass;
-	G4double Position_r					= aStep->GetPreStepPoint()->GetPosition().r();
-	G4double CopyNo						= aStep->GetTrack()->GetTouchableHandle()->GetVolume(0)->GetCopyNo();
+	G4String ParticleName					= aStep->GetTrack()->GetDefinition()->GetParticleName();
+	G4double TotalEnergyDeposit 	    	= aStep->GetTotalEnergyDeposit()*aStep->GetTrack()->GetWeight();
+	G4double KineticEnergy					= aStep->GetPreStepPoint()->GetKineticEnergy();
+	G4double mass							= currentVolume->GetMass();
+	G4double TotalDose						= TotalEnergyDeposit/mass;
+	G4double waterSphereArray_rmin 			= NP1Control::GetInstance()->GetShellsFrame_rmin();
+	G4double Position_r						= aStep->GetPreStepPoint()->GetPosition().r()-waterSphereArray_rmin;
+	G4double CopyNo							= aStep->GetTrack()->GetTouchableHandle()->GetVolume(0)->GetCopyNo();
 
 	if(!(TotalEnergyDeposit>0. || TotalDose>0. || aStep->GetNumberOfSecondariesInCurrentStep()>0)) return;
 
@@ -80,14 +81,6 @@ void NP1SteppingAction::UserSteppingAction(const G4Step* aStep)
 
 	if(LogicalVolumeAtVertexName=="particle_log" || LogicalVolumeAtVertexName=="particleCoating_log"){
 
-		if(TotalEnergyDeposit>0.){
-			man->FillH1(0,Position_r,TotalEnergyDeposit);
-			man->FillH1(1,CopyNo,TotalEnergyDeposit);
-		}
-		if(TotalDose>0.) {
-			man->FillH1(2,Position_r,TotalDose);
-			man->FillH1(3,CopyNo,TotalDose);
-		}
 		if(!fTrackingAction->GetSecondaryCountFlag()){
 			if(KineticEnergy>0.) man->FillH1(8,KineticEnergy);
 			fTrackingAction->SetSecondaryCountFlag(true);
@@ -95,11 +88,17 @@ void NP1SteppingAction::UserSteppingAction(const G4Step* aStep)
 
 	}
 
-	if(LogicalVolumeAtVertexName=="particle_log" || LogicalVolumeAtVertexName=="particleCoating_log"){
-		if(TotalEnergyDeposit>0.) fEventAction->AddSecondariesEdep(TotalEnergyDeposit);
-
+	if(TotalEnergyDeposit>0. && currentVolume->GetName()=="shell_log"){
+		man->FillH1(0,Position_r,TotalEnergyDeposit/keV);
+		man->FillH1(1,CopyNo,TotalEnergyDeposit/keV);
+		fEventAction->AddTotalEdep(TotalEnergyDeposit);
 	}
-		if(TotalEnergyDeposit>0.) fEventAction->AddTotalEdep(TotalEnergyDeposit);
+	if(TotalDose>0. && currentVolume->GetName()=="shell_log") {
+		man->FillH1(2,Position_r,TotalDose);
+		man->FillH1(3,CopyNo,TotalDose);
+	}
+
+	//if(TotalEnergyDeposit>0.)
 
 }
 

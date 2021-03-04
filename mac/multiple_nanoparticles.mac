@@ -23,9 +23,9 @@
 /NP1/geometry/SetConcentration 20 mg/g
 
 # Set nano-particles array size
-/NP1/geometry/SetVoxelsXNo 10
-/NP1/geometry/SetVoxelsYNo 10
-/NP1/geometry/SetVoxelsZNo 10
+/NP1/geometry/SetVoxelsXNo 100
+/NP1/geometry/SetVoxelsYNo 100
+/NP1/geometry/SetVoxelsZNo 100
 
 # ==================== Beam settings ====================
 
@@ -37,8 +37,13 @@
 #/control/execute beam/circular_plane.mac
 #/gps/pos/radius 10 nm
 
+# ==================== Gamma Beam ====================
+
 # 40keV beam
 #/control/execute beam/40keV.mac
+
+# 50keV beam
+#/control/execute beam/50keV.mac
 
 # RX 40kVp beam
 /control/execute beam/RX40kVp.mac
@@ -54,3 +59,23 @@
 
 # Gamma accelerator 6MV beam
 #/control/execute beam/GammaAccelerator6MV.mac
+
+# ==================== Proton Beam ====================
+
+# 100keV beam
+#/control/execute beam/proton_100keV.mac
+
+# 1MeV beam
+#/control/execute beam/proton_1MeV.mac
+
+# 10MeV beam
+#/control/execute beam/proton_10MeV.mac
+
+# 100MeV beam
+#/control/execute beam/proton_100MeV.mac
+
+
+# ==================== Readout settings ====================
+
+/analysis/h1/setX 0 100 0 10 um
+/analysis/h1/setX 2 100 0 10 um

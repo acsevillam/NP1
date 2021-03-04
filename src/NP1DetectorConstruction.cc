@@ -38,7 +38,6 @@
 
 // NP1 Headers
 #include "NP1DetectorConstruction.hh"
-#include "NP1CrossSectionBasedBiasing.hh"
 #include "NP1Materials.hh"
 #include "NP1Control.hh"
 #include "NP1SVParameterisation.hh"
@@ -361,26 +360,7 @@ void NP1DetectorConstruction::SetupGeometry(G4LogicalVolume* motherVolume){
 }
 
 void NP1DetectorConstruction::ConstructSDandField()
-{
-	SetupBiasing();
-}
-
-void NP1DetectorConstruction::SetupBiasing()
-{
-
-	  // -- Fetch volume for biasing:
-	  G4LogicalVolume* particle_log = G4LogicalVolumeStore::GetInstance()->GetVolume("particle_log");
-
-	  // ----------------------------------------------
-	  // -- operator creation and attachment to volume:
-	  // ----------------------------------------------
-	  NP1CrossSectionBasedBiasing* biasingOperator = new NP1CrossSectionBasedBiasing();
-	  biasingOperator->AddParticle("gamma");
-	  biasingOperator->AddParticle("neutron");
-	  biasingOperator->AttachTo(particle_log);
-	  G4cout << " Attaching biasing operator " << biasingOperator->GetName() << " to logical volume " << particle_log->GetName() << G4endl;
-
-}
+{}
 
 void NP1DetectorConstruction::SetNanoParticleRadius(G4double aRadius){
 
@@ -398,6 +378,7 @@ void NP1DetectorConstruction::SetNanoParticleRadius(G4double aRadius){
 	particle_geo->SetRadius(aRadius-fParticleCoatingThickness);
 
 	// Setting particle coating radius
+	NP1Control::GetInstance()->SetShellsFrame_rmin(fParticleRadius);
 	G4Orb* particleCoating_geo = (G4Orb*) this->fParticleCoating_phys->GetLogicalVolume()->GetSolid();
 	particleCoating_geo->SetRadius(aRadius);
 
@@ -559,6 +540,7 @@ void NP1DetectorConstruction::SetWaterVoxel_dx(G4double aDx){
 	G4GeometryManager* geoman = G4GeometryManager::GetInstance() ;
 
 	fWaterVoxel_dx=aDx/2.+fParticleRadius;
+
 
 	// Open geometry for the physical volume to be modified ...
 	//

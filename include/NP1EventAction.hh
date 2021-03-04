@@ -42,13 +42,11 @@ class NP1EventAction : public G4UserEventAction
     virtual void EndOfEventAction(const G4Event* event);
 
     void AddTotalEdep(G4double Edep) { fTotalEdep += Edep; }
-    void AddSecondariesEdep(G4double Edep) { fSecondariesEdep += Edep; }
     void CountSecondary() { fNumberOfSecondaries ++; }
 
   private:
     NP1RunAction* 			fRunAction;
     G4double     			fTotalEdep;
-    G4double     			fSecondariesEdep;
     G4int     				fNumberOfSecondaries;
 
 };

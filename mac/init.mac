@@ -15,7 +15,7 @@
 
 # Switch on/off ntupling
 /analysis/setNtupleDirName ntuples
-/analysis/ntuple/setActivationToAll true
+/analysis/ntuple/setActivationToAll false
 
 # =================== Physics settings ==================
 #/NP1/physics/addPhysics emstandard_opt0
@@ -49,3 +49,5 @@
 
 #/control/execute mac/multiple_nanoparticles.mac
 /control/execute mac/single_nanoparticle.mac
+
+/run/printProgress 100

@@ -27,12 +27,12 @@
 #include "NP1EventAction.hh"
 #include "NP1Analysis.hh"
 #include "NP1RunAction.hh"
+#include "NP1Control.hh"
 
 NP1EventAction::NP1EventAction(NP1RunAction* runAction):
 G4UserEventAction(),
 fRunAction(runAction),
 fTotalEdep(0.),
-fSecondariesEdep(0.),
 fNumberOfSecondaries(0)
 {}
 
@@ -75,7 +75,6 @@ void NP1EventAction::BeginOfEventAction(const G4Event* anEvent)
 	}
 
 	fTotalEdep=0.;
-	fSecondariesEdep=0.;
 	fNumberOfSecondaries=0;
 
 }
@@ -83,7 +82,7 @@ void NP1EventAction::BeginOfEventAction(const G4Event* anEvent)
 void NP1EventAction::EndOfEventAction(const G4Event* /*anEvent*/)
 {   
 
-	if(!(fTotalEdep>0. || fSecondariesEdep>0. || fNumberOfSecondaries>0)) return;
+	if(!(fTotalEdep>0. || fNumberOfSecondaries>0)) return;
 
 	G4LogicalVolume* waterBox_log = G4LogicalVolumeStore::GetInstance()->GetVolume("waterBox_log");
 	G4double mass = waterBox_log->GetMass();
@@ -93,21 +92,18 @@ void NP1EventAction::EndOfEventAction(const G4Event* /*anEvent*/)
 	// accumulate statistics in run action
 	// Analysis manager
 
-	if(fSecondariesEdep>0.) {
-		analysisManager->FillH1(4,fSecondariesEdep);
-		analysisManager->FillH1(5,fSecondariesEdep/mass);
-	}
-	if(fNumberOfSecondaries>0) analysisManager->FillH1(6,fNumberOfSecondaries);
+	fRunAction->CountGoodEvent(1.0);
 
 	if(fTotalEdep>0.){
 		fRunAction->AddTotalEdep(fTotalEdep);
 		fRunAction->CountEdepEvent();
-	}
-	if(fSecondariesEdep>0.){
-		fRunAction->AddSecondariesEdep(fSecondariesEdep);
-		fRunAction->CountGoodEvent();
 
+		//G4cout<<"\t"<<G4BestUnit(fTotalEdep,"Energy")<<G4endl;
+		analysisManager->FillH1(4,fTotalEdep);
+		analysisManager->FillH1(5,fTotalEdep/mass);
 	}
-	if(fNumberOfSecondaries>0) fRunAction->CountSecondaries(fNumberOfSecondaries);
+	if(fNumberOfSecondaries>0.){
+		analysisManager->FillH1(6,fNumberOfSecondaries);
+	}
 
 }
