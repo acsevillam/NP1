@@ -100,7 +100,12 @@ void NP1EventAction::EndOfEventAction(const G4Event* /*anEvent*/)
 		fRunAction->CountGoodEvent(1.0);
 		analysisManager->FillH1(4,fTotalEdep);
 		analysisManager->FillH1(5,fTotalEdep/mass);
-		analysisManager->FillH1(6,fNumberOfSecondaries);
+		analysisManager->FillH1(8,fNumberOfSecondaries);
 	}
+	if(fNumberOfSecondaries==0. && fTotalEdep>0.){
+		analysisManager->FillH1(6,fTotalEdep);
+		analysisManager->FillH1(7,fTotalEdep/mass);
+	}
+
 
 }

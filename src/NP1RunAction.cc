@@ -142,20 +142,20 @@ void NP1RunAction::EndOfRunAction(const G4Run* run)
 
 		G4cout
 		<< G4endl
-		<< "(2)  Number of edep events per event: "
-		<< G4endl
-		<< "     " << G4double(eDepEvents)/G4double(nofEvents)
-		<< G4endl
-		<< "     [Total number of edep events / Total events per run (1)]"
-		<< G4endl;
-
-		G4cout
-		<< G4endl
-		<< "(3)  Number of good events per event: "
+		<< "(2)  Number of good events per event: "
 		<< G4endl
 		<< "     " << G4double(goodEvents)/G4double(nofEvents)
 		<< G4endl
 		<< "     [Total number of good events / Total events per run (1)]"
+		<< G4endl;
+
+		G4cout
+		<< G4endl
+		<< "(3)  Number of edep non good events per event: "
+		<< G4endl
+		<< "     " << G4double(eDepEvents-goodEvents)/G4double(nofEvents)
+		<< G4endl
+		<< "     [(Total number of edep events -  Total number of good events)/ Total events per run (1)]"
 		<< G4endl;
 
 		G4cout
@@ -186,7 +186,7 @@ void NP1RunAction::EndOfRunAction(const G4Run* run)
 		<< G4endl
 		<< "     " << G4BestUnit(analysisManager->GetH1(4)->mean()*keV,"Energy") << " +/- " << G4BestUnit(analysisManager->GetH1(4)->rms()*keV,"Energy")
 		<< G4endl
-		<< "     [Energy deposit per event histo mean and rms]"
+		<< "     [Energy deposit per good event histo mean and rms]"
 		<< G4endl;
 
 		G4cout
@@ -200,9 +200,27 @@ void NP1RunAction::EndOfRunAction(const G4Run* run)
 
 		G4cout
 		<< G4endl
-		<< "(8) Cumulated secondaries per good event, in scoring volume : "
+		<< "(8)  Cumulated total Edep per edep non good event in water box volume: "
 		<< G4endl
-		<< "     " << analysisManager->GetH1(6)->mean() << " +/- " << analysisManager->GetH1(6)->rms()
+		<< "     " << G4BestUnit(analysisManager->GetH1(6)->mean()*keV,"Energy") << " +/- " << G4BestUnit(analysisManager->GetH1(6)->rms()*keV,"Energy")
+		<< G4endl
+		<< "     [Energy deposit per edep non good event histo mean and rms]"
+		<< G4endl;
+
+		G4cout
+		<< G4endl
+		<< "(9)  Cumulated total dose per edep non good event, in water box volume: "
+		<< G4endl
+		<< "     " << G4BestUnit(analysisManager->GetH1(6)->mean()*keV/mass,"Dose") << " +/- " << G4BestUnit(analysisManager->GetH1(6)->rms()*keV/mass,"Dose")
+		<< G4endl
+		<< "     [Cumulated total Edep per edep non good event in water box volume (6) / mass of water box]"
+		<< G4endl;
+
+		G4cout
+		<< G4endl
+		<< "(10) Cumulated secondaries per good event, in scoring volume : "
+		<< G4endl
+		<< "     " << analysisManager->GetH1(8)->mean() << " +/- " << analysisManager->GetH1(8)->rms()
 		<< G4endl
 		<< "     [Number of secondaries per event histo mean and rms]"
 		<< G4endl;
@@ -276,22 +294,22 @@ void NP1RunAction::CreateHistos(){
 	analysisManager->SetFirstHistoId(0);
 
 	// id = 0
-	analysisManager->CreateH1("DepthEnergyDepositByElectronsPerGoodEvent","Depth energy deposit by electrons per event", waterSpheresNo, 0, waterSphereArray_rmax-waterSphereArray_rmin,"um");
+	analysisManager->CreateH1("DepthEnergyDepositByElectronsPerEvent","Depth energy deposit by electrons per event", waterSpheresNo, 0, waterSphereArray_rmax-waterSphereArray_rmin,"um");
 	analysisManager->SetH1Activation(0,false);
 	analysisManager->SetH1XAxisTitle(0,"Distance from nano-particle center [um]");
 	analysisManager->SetH1YAxisTitle(0,"Edep in "+G4String(G4BestUnit(waterSphereArray_dr,"Length"))+" shell per event [keV]");
 	// id = 1
-	analysisManager->CreateH1("DepthEnergyDepositByElectronsPerGoodEvent2","Depth energy deposit by electrons per event", waterSpheresNo, 0, waterSpheresNo);
+	analysisManager->CreateH1("DepthEnergyDepositByElectronsPerEvent2","Depth energy deposit by electrons per event", waterSpheresNo, 0, waterSpheresNo);
 	analysisManager->SetH1Activation(1,false);
 	analysisManager->SetH1XAxisTitle(1,"Distance from nano-particle center [No.]");
 	analysisManager->SetH1YAxisTitle(1,"Edep in "+G4String(G4BestUnit(waterSphereArray_dr,"Length"))+" shell per event [keV]");
 	// id = 2
-	analysisManager->CreateH1("DepthDoseByElectronsPerGoodEvents","Depth dose by electrons per event", waterSpheresNo, 0, waterSphereArray_rmax-waterSphereArray_rmin,"um");
+	analysisManager->CreateH1("DepthDoseByElectronsPerEvents","Depth dose by electrons per event", waterSpheresNo, 0, waterSphereArray_rmax-waterSphereArray_rmin,"um");
 	analysisManager->SetH1Activation(2,false);
 	analysisManager->SetH1XAxisTitle(2,"Distance from nano-particle center [um]");
 	analysisManager->SetH1YAxisTitle(2,"DoseDep in "+G4String(G4BestUnit(waterSphereArray_dr,"Length"))+" shell of water per event [keV]");
 	// id = 3
-	analysisManager->CreateH1("DepthDoseByElectronsPerGoodEvents2","Depth dose by electrons per event", waterSpheresNo, 0, waterSpheresNo);
+	analysisManager->CreateH1("DepthDoseByElectronsPerEvents2","Depth dose by electrons per event", waterSpheresNo, 0, waterSpheresNo);
 	analysisManager->SetH1Activation(3,false);
 	analysisManager->SetH1XAxisTitle(3,"Distance from nano-particle center [No.]");
 	analysisManager->SetH1YAxisTitle(3,"DoseDep in "+G4String(G4BestUnit(waterSphereArray_dr,"Length"))+" shell of water per event [keV]");
@@ -302,18 +320,24 @@ void NP1RunAction::CreateHistos(){
 	analysisManager->CreateH1("DosePerGoodEvent","Dose per good event distribution", 1000, 0, 1E-3*gray, "microGy");
 	analysisManager->SetH1Activation(5,false);
 	// id = 6
-	analysisManager->CreateH1("NumberOfSecondariesPerGoodEvent","Number of secondaries generated per good event distribution", 20, 1, 20);
+	analysisManager->CreateH1("EnergyDepositPerEDepNonGoodEvent","Energy deposit per edep non good event distribution", 1000, 0., 40*keV, "keV");
 	analysisManager->SetH1Activation(6,false);
 	// id = 7
-	analysisManager->CreateH1("SecondariesSpectrumAtVertex","Secondaries' energy distribution at vertex", 1000, 0, 40*keV,"keV");
+	analysisManager->CreateH1("DosePerEDepNonGoodEvent","Dose per edep non good event distribution", 1000, 0, 1E-3*gray, "microGy");
 	analysisManager->SetH1Activation(7,false);
 	// id = 8
-	analysisManager->CreateH1("SecondariesSpectrumAtNPSurface","Secondaries' energy distribution at nano-particle surface", 1000, 0, 40*keV,"keV");
+	analysisManager->CreateH1("NumberOfSecondariesPerGoodEvent","Number of secondaries generated per good event distribution", 20, 1, 20);
 	analysisManager->SetH1Activation(8,false);
 	// id = 9
-	analysisManager->CreateH1("SecondariesTrackLength","Secondaries' track length", 1000, waterSphereArray_rmin, waterSphereArray_rmax*100,"um");
+	analysisManager->CreateH1("SecondariesSpectrumAtVertex","Secondaries' energy distribution at vertex", 1000, 0, 40*keV,"keV");
 	analysisManager->SetH1Activation(9,false);
 	// id = 10
-	analysisManager->CreateH1("SecondariesRange","Secondaries' range", 1000, waterSphereArray_rmin, waterSphereArray_rmax*100,"um");
+	analysisManager->CreateH1("SecondariesSpectrumAtNPSurface","Secondaries' energy distribution at nano-particle surface", 1000, 0, 40*keV,"keV");
 	analysisManager->SetH1Activation(10,false);
+	// id = 11
+	analysisManager->CreateH1("SecondariesTrackLength","Secondaries' track length", 1000, waterSphereArray_rmin, waterSphereArray_rmax*100,"um");
+	analysisManager->SetH1Activation(11,false);
+	// id = 12
+	analysisManager->CreateH1("SecondariesRange","Secondaries' range", 1000, waterSphereArray_rmin, waterSphereArray_rmax*100,"um");
+	analysisManager->SetH1Activation(12,false);
 }

@@ -82,7 +82,7 @@ void NP1SteppingAction::UserSteppingAction(const G4Step* aStep)
 	if(LogicalVolumeAtVertexName=="particle_log" || LogicalVolumeAtVertexName=="particleCoating_log"){
 
 		if(!fTrackingAction->GetSecondaryCountFlag()){
-			if(KineticEnergy>0.) man->FillH1(8,KineticEnergy);
+			if(KineticEnergy>0.) man->FillH1(10,KineticEnergy);
 			fTrackingAction->SetSecondaryCountFlag(true);
 		}
 
