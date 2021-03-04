@@ -286,7 +286,7 @@ void NP1RunAction::CreateHistos(){
 	analysisManager->SetH1XAxisTitle(3,"Distance from nano-particle center [No.]");
 	analysisManager->SetH1YAxisTitle(3,"DoseDep in "+G4String(G4BestUnit(waterSphereArray_dr,"Length"))+" shell of water per event [keV]");
 	// id = 4
-	analysisManager->CreateH1("NumberOfSecondariesPerGoodEvent","Number of secondaries generated per good event distribution", 10, 1, 10);
+	analysisManager->CreateH1("NumberOfSecondariesPerGoodEvent","Number of secondaries generated per good event distribution", 20, 1, 20);
 	analysisManager->SetH1Activation(4,false);
 	// id = 5
 	analysisManager->CreateH1("EnergyDepositPerGoodEvent","Energy deposit per good event distribution", 1000, 0., 40*keV, "keV");
