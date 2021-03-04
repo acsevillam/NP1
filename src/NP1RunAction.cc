@@ -142,15 +142,25 @@ void NP1RunAction::EndOfRunAction(const G4Run* run)
 
 		G4cout
 		<< G4endl
-		<< "(2)  Number of good events per event: "
+		<< "(2)  Number of edep events per event: "
+		<< G4endl
+		<< "     " << G4double(eDepEvents)/G4double(nofEvents)
+		<< G4endl
+		<< "     [Total number of good events / Total events per run (1)]"
+		<< G4endl;
+
+		G4cout
+		<< G4endl
+		<< "(3)  Number of good events per event: "
 		<< G4endl
 		<< "     " << G4double(goodEvents)/G4double(nofEvents)
 		<< G4endl
 		<< "     [Total number of good events / Total events per run (1)]"
 		<< G4endl;
+
 		G4cout
 		<< G4endl
-		<< "(3)  Cumulated total Edep per event in water box volume: "
+		<< "(4)  Cumulated total Edep per event in water box volume: "
 		<< G4endl
 		<< "     " << G4BestUnit(TotalEdep/nofEvents,"Energy") << " +/- " << G4BestUnit(rmsTotalEdep/nofEvents,"Energy")
 		<< G4endl
@@ -163,16 +173,16 @@ void NP1RunAction::EndOfRunAction(const G4Run* run)
 
 		G4cout
 		<< G4endl
-		<< "(4)  Cumulated total dose per event, in water box volume: "
+		<< "(5)  Cumulated total dose per event, in water box volume: "
 		<< G4endl
 		<< "     " << G4BestUnit(TotalEdep/nofEvents/mass,"Dose") << " +/- " << G4BestUnit(rmsTotalEdep/nofEvents/mass,"Dose")
 		<< G4endl
-		<< "     [Total Edep in water box per event (3) / mass of water box ]"
+		<< "     [Total Edep in water box per event (4) / mass of water box ]"
 		<< G4endl;
 
 		G4cout
 		<< G4endl
-		<< "(5)  Cumulated total Edep per good event in water box volume: "
+		<< "(6)  Cumulated total Edep per good event in water box volume: "
 		<< G4endl
 		<< "     " << G4BestUnit(analysisManager->GetH1(4)->mean()*keV,"Energy") << " +/- " << G4BestUnit(analysisManager->GetH1(4)->rms()*keV,"Energy")
 		<< G4endl
@@ -181,16 +191,16 @@ void NP1RunAction::EndOfRunAction(const G4Run* run)
 
 		G4cout
 		<< G4endl
-		<< "(6)  Cumulated total dose per good event, in water box volume: "
+		<< "(7)  Cumulated total dose per good event, in water box volume: "
 		<< G4endl
 		<< "     " << G4BestUnit(analysisManager->GetH1(4)->mean()*keV/mass,"Dose") << " +/- " << G4BestUnit(analysisManager->GetH1(4)->rms()*keV/mass,"Dose")
 		<< G4endl
-		<< "     [Cumulated total Edep per good event in water box volume (5) / mass of water box]"
+		<< "     [Cumulated total Edep per good event in water box volume (6) / mass of water box]"
 		<< G4endl;
 
 		G4cout
 		<< G4endl
-		<< "(7) Cumulated secondaries per good event, in scoring volume : "
+		<< "(8) Cumulated secondaries per good event, in scoring volume : "
 		<< G4endl
 		<< "     " << analysisManager->GetH1(6)->mean() << " +/- " << analysisManager->GetH1(6)->rms()
 		<< G4endl
