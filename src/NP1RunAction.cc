@@ -213,7 +213,7 @@ void NP1RunAction::EndOfRunAction(const G4Run* run)
 		<< G4endl
 		<< "     " << G4BestUnit(analysisManager->GetH1(6)->mean()*keV/mass,"Dose") << " +/- " << G4BestUnit(analysisManager->GetH1(6)->rms()*keV/mass,"Dose")
 		<< G4endl
-		<< "     [Cumulated total Edep per edep non good event in water box volume (6) / mass of water box]"
+		<< "     [Cumulated total Edep per edep non good event in water box volume (8) / mass of water box]"
 		<< G4endl;
 
 		G4cout
@@ -229,6 +229,26 @@ void NP1RunAction::EndOfRunAction(const G4Run* run)
 		<< G4endl
 		<< "------------------------------------------------------------"
 		<< G4endl;
+
+		G4cout
+		<< G4endl
+		<< "comma-separed values : "
+		<< G4endl
+		<< G4endl
+		<< "'(1);'(2);'(3);'(4)[MeV];'(5)[Gy];'(6)[MeV];'(7)[Gy];'(8)[MeV];'(9)[Gy];'(10)"
+		<< G4endl
+		<< G4endl
+		<< nofEvents << ";"
+		<< G4double(goodEvents)/G4double(nofEvents) << ";"
+		<< G4double(eDepEvents-goodEvents)/G4double(nofEvents) << ";"
+		<< TotalEdep/nofEvents/MeV << ";"
+		<< TotalEdep/nofEvents/mass/gray << ";"
+		<< analysisManager->GetH1(4)->mean()*keV/MeV << ";"
+		<< analysisManager->GetH1(4)->mean()*keV/mass/gray << ";"
+		<< analysisManager->GetH1(6)->mean()*keV/MeV << ";"
+		<< analysisManager->GetH1(6)->mean()*keV/mass/gray << ";"
+		<< analysisManager->GetH1(8)->mean()
+		<< G4endl<< G4endl<< G4endl;
 
 	}
 

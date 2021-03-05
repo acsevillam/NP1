@@ -9,8 +9,8 @@
 #source /afs/cern.ch/work/a/asevilla/workspace/G4WORK/SciFW1/setup_lxplus.sh
 
 # Defining variables
-NP1_DIR=/Users/asevilla/workspace/G4WORK/NP1-build
-JOB_DIR=/Users/asevilla/workspace/JOBS/NP1/Job1
+NP1_DIR=/home/asevilla/workspace/G4WORK/NP1-build
+JOB_DIR=/home/asevilla/workspace/JOBS/NP1/Job1
 DataNo=1
 i=0
 
@@ -55,12 +55,12 @@ cp -R $JOB_DIR/mac/* $JOB_DIR/${DataNo}/mac/.
 
 cd $JOB_DIR/${DataNo}
 
-sizesArray=(5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100)
+sizesArray=(10 20 30 40 50 60 70 80 90 100)
 
 for i in ${!sizesArray[*]}
 do
 echo " ${sizesArray[$i]}nm is running"
-time $NP1_DIR/NP1 -m $JOB_DIR/mac/${sizesArray[$i]}nm.mac -b off -v off -n 10000000 > $JOB_DIR/${DataNo}/log/${sizesArray[$i]}nm.log &
+time $NP1_DIR/NP1 -m $JOB_DIR/mac/${sizesArray[$i]}nm.mac -v off -n 1000000 > $JOB_DIR/${DataNo}/log/${sizesArray[$i]}nm.log &
 sleep 10
 done
 

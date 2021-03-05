@@ -98,7 +98,5 @@ void NP1SteppingAction::UserSteppingAction(const G4Step* aStep)
 		man->FillH1(3,CopyNo,TotalDose);
 	}
 
-	//if(TotalEnergyDeposit>0.)
-
 }
 

@@ -15,7 +15,7 @@
 
 # Switch on/off ntupling
 /analysis/setNtupleDirName ntuples
-/analysis/ntuple/setActivationToAll true
+/analysis/ntuple/setActivationToAll false
 
 # =================== Physics settings ==================
 #/NP1/physics/addPhysics emstandard_opt0
@@ -48,13 +48,13 @@
 # ===================== NPs settings ===================
 
 # Nano-particle coating material
-/NP1/geometry/SetNanoParticleCoatingMaterial %%ParticleCoatingMaterial%% # candidates: G4_Au G4_Ag Dextran_70 PEG_3500 TiO2
+/NP1/geometry/SetNanoParticleCoatingMaterial %%ParticleCoatingMaterial%% 
 
 # Nano-particle coating thickness
 /NP1/geometry/SetNanoParticleCoatingThickness %%ParticleCoatingThickness%% %%ParticleCoatingThicknessUnit%%
 
 # Nano-particle material
-/NP1/geometry/SetNanoParticleMaterial %%ParticleMaterial%% # candidates: G4_Au G4_Ag G4_Pt G4_Pb Ta2O5 Bi2S3
+/NP1/geometry/SetNanoParticleMaterial %%ParticleMaterial%%
 
 # Nano-particle radius
 /NP1/geometry/SetNanoParticleRadius %%ParticleRadius%% %%ParticleRadiusUnit%%
@@ -82,14 +82,6 @@
 %%CircularShapeBeam%%/control/execute beam/circular_plane.mac
 %%CircularShapeBeam%%/gps/pos/radius %%BeamRadius%% %%BeamRadiusUnit%%
 
-# spherical volume source
-%%SphericalVolumeSource%%/control/execute beam/spherical_volume.mac
-%%SphericalVolumeSource%%/gps/pos/radius %%BeamRadius%% %%BeamRadiusUnit%%
-
-# spherical surface source
-%%SphericalSurfaceSource%%/control/execute beam/spherical_surface.mac
-%%SphericalSurfaceSource%%/gps/pos/radius %%BeamRadius%% %%BeamRadiusUnit%%
-
 # beam macro file
 /control/execute %%BeamMacroFile%%
 
@@ -107,3 +99,7 @@
 /analysis/h1/setX 8 %%Histo1D8X%%
 /analysis/h1/setX 9 %%Histo1D9X%%
 /analysis/h1/setX 10 %%Histo1D10X%%
+/analysis/h1/setX 11 %%Histo1D11X%%
+/analysis/h1/setX 12 %%Histo1D12X%%
+
+/run/printProgress 1000
