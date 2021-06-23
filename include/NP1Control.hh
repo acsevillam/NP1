@@ -43,10 +43,6 @@ public:
     inline void SetShellsFrame_rmax (G4double anRmax) { fShellsFrame_rmax=anRmax;};
     inline G4double GetShellsFrame_rmax () { return fShellsFrame_rmax;};
 
-    inline void SetCSBiasFactor (G4double aFactor) { fCSBiasFactor=aFactor;};
-    inline G4double GetCSBiasFactor () { return fCSBiasFactor;};
-
-
     inline G4UserTrackingAction* GetTrackingAction() const { return fTrackingAction;}
 
     inline void SetTrackingAction(G4UserTrackingAction* aTrackingAction){fTrackingAction=aTrackingAction;}
@@ -73,7 +69,6 @@ private:
     G4int						fShellsNo ;
     G4double					fShellsFrame_rmin ;
     G4double					fShellsFrame_rmax ;
-    G4double					fCSBiasFactor ;
 
     G4UserTrackingAction*		fTrackingAction ;
     G4UserSteppingAction*    	fSteppingAction ;

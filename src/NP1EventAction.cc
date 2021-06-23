@@ -27,14 +27,16 @@
 #include "NP1EventAction.hh"
 #include "NP1Analysis.hh"
 #include "NP1RunAction.hh"
+#include "NP1Control.hh"
 
 NP1EventAction::NP1EventAction(NP1RunAction* runAction):
 G4UserEventAction(),
 fRunAction(runAction),
 fTotalEdep(0.),
-fSecondariesEdep(0.),
-fNumberOfSecondaries(0),
-fTrackLength(0)
+fPrimaryTrackLength(0.),
+fLetN(0.),
+fLetD(0.),
+fNumberOfSecondaries(0)
 {}
 
 NP1EventAction::~NP1EventAction()
@@ -65,7 +67,7 @@ void NP1EventAction::BeginOfEventAction(const G4Event* anEvent)
 	// Analysis manager
 	G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
 
-	if(analysisManager->GetNtupleActivation(1)==true){
+	if(analysisManager->GetActivation()){
 		analysisManager->FillNtupleDColumn(1,0,KineticEnergyAtVertex);
 		analysisManager->FillNtupleSColumn(1,1,ParticleName);
 		analysisManager->FillNtupleDColumn(1,2,XAtVertex);
@@ -76,16 +78,17 @@ void NP1EventAction::BeginOfEventAction(const G4Event* anEvent)
 	}
 
 	fTotalEdep=0.;
-	fSecondariesEdep=0.;
+	fPrimaryTrackLength=0.;
 	fNumberOfSecondaries=0;
-	fTrackLength=0;
+	fLetN=0.;
+	fLetD=0.;
 
 }
 
 void NP1EventAction::EndOfEventAction(const G4Event* /*anEvent*/)
 {   
 
-	if(!(fTotalEdep>0. || fSecondariesEdep>0. || fNumberOfSecondaries>0)) return;
+	if(!(fTotalEdep>0. || fNumberOfSecondaries>0)) return;
 
 	G4LogicalVolume* waterBox_log = G4LogicalVolumeStore::GetInstance()->GetVolume("waterBox_log");
 	G4double mass = waterBox_log->GetMass();
@@ -95,22 +98,29 @@ void NP1EventAction::EndOfEventAction(const G4Event* /*anEvent*/)
 	// accumulate statistics in run action
 	// Analysis manager
 
-	if(fSecondariesEdep>0.) {
-		analysisManager->FillH1(4,fSecondariesEdep);
-		analysisManager->FillH1(5,fSecondariesEdep/mass);
+	if(fLetN>0. && fLetD>0. ){
+		fRunAction->AddLet(fLetN/fLetD);
+		analysisManager->FillH1(13,fLetN/fLetD);
 	}
-	if(fNumberOfSecondaries>0) analysisManager->FillH1(6,fNumberOfSecondaries);
 
 	if(fTotalEdep>0.){
 		fRunAction->AddTotalEdep(fTotalEdep);
+		fRunAction->AddPrimaryTrackLength(fPrimaryTrackLength);
 		fRunAction->CountEdepEvent();
 	}
-	if(fSecondariesEdep>0.){
-		fRunAction->AddSecondariesEdep(fSecondariesEdep);
-		fRunAction->CountGoodEvent();
 
+	if(analysisManager->GetActivation()){
+		if(fNumberOfSecondaries>0. && fTotalEdep>0.){
+			fRunAction->CountGoodEvent(1.0);
+			analysisManager->FillH1(4,fTotalEdep);
+			analysisManager->FillH1(5,fTotalEdep/mass);
+			analysisManager->FillH1(8,fNumberOfSecondaries);
+		}
+		if(fNumberOfSecondaries==0. && fTotalEdep>0.){
+			analysisManager->FillH1(6,fTotalEdep);
+			analysisManager->FillH1(7,fTotalEdep/mass);
+		}
 	}
-	if(fNumberOfSecondaries>0) fRunAction->CountSecondaries(fNumberOfSecondaries);
-	if(fTrackLength>0) fRunAction->AddTrackLength(fTrackLength);
+
 
 }

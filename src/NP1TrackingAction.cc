@@ -67,9 +67,9 @@ void NP1TrackingAction::PostUserTrackingAction (const G4Track* aTrack){
 	G4double R		 					= aTrack->GetPosition().getR();
 
 
-	analysisManager->FillH1(7,KineticEnergyAtVertex);
-	analysisManager->FillH1(9,TrackLength);
-	analysisManager->FillH1(10,R);
+	analysisManager->FillH1(9,KineticEnergyAtVertex);
+	analysisManager->FillH1(11,TrackLength);
+	analysisManager->FillH1(12,R);
 
 	if(analysisManager->GetNtupleActivation(0)==true){
 		analysisManager->FillNtupleDColumn(0,0,KineticEnergyAtVertex);

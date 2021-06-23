@@ -42,16 +42,18 @@ class NP1EventAction : public G4UserEventAction
     virtual void EndOfEventAction(const G4Event* event);
 
     void AddTotalEdep(G4double Edep) { fTotalEdep += Edep; }
-    void AddSecondariesEdep(G4double Edep) { fSecondariesEdep += Edep; }
+    void AddPrimaryTrackLength(G4double TrackLenth) { fPrimaryTrackLength += TrackLenth; }
+    void AddLetN(G4double LetN) { fLetN += LetN; }
+    void AddLetD(G4double LetD) { fLetD += LetD; }
     void CountSecondary() { fNumberOfSecondaries ++; }
-    void AddTrackLength(G4double stepLength) { fTrackLength += stepLength; }
 
   private:
     NP1RunAction* 			fRunAction;
     G4double     			fTotalEdep;
-    G4double     			fSecondariesEdep;
+    G4double				fPrimaryTrackLength;
+    G4double     			fLetN;
+    G4double     			fLetD;
     G4int     				fNumberOfSecondaries;
-    G4double     			fTrackLength;
 
 };
 

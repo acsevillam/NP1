@@ -64,7 +64,6 @@ class NP1DetectorConstruction : public G4VUserDetectorConstruction
 
   private:
     void SetupGeometry(G4LogicalVolume* motherVolume);
-	void SetupBiasing();
     vector<G4LogicalVolume*>  		fScoringVolumeVector;
 	G4UImessenger* 	 				fNP1DetectorMessenger ;
 	G4VPhysicalVolume* 				fParticle_phys;
@@ -86,8 +85,6 @@ class NP1DetectorConstruction : public G4VUserDetectorConstruction
     G4double						fWaterVoxel_dx ;
     G4VPhysicalVolume* 				fWaterBox_phys;
     G4double						fWaterPhantom_dx ;
-    G4double						fWaterPhantom_dy ;
-    G4double						fWaterPhantom_dz ;
     G4VPhysicalVolume* 				fWaterPhantom_phys;
 	vector<G4int> 					fVoxelsID;
 

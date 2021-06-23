@@ -27,9 +27,7 @@
 #include "G4UIExecutive.hh"
 #include "QGSP_BIC_HP.hh"
 #include "Randomize.hh"
-#include "G4GenericBiasingPhysics.hh"
 #include "G4SystemOfUnits.hh"
-#include "G4ScoringManager.hh"
 
 // NP1 Headers
 #include "NP1Control.hh"
@@ -41,7 +39,6 @@ void PrintUsage() {
 	G4cerr << " ./NP1 [-m macro ] "
 			<< " [-v visualization {'on','off'}]"
 			<< " [-vm vis_macro ]"
-			<< " [-b biasing {'on','off'}]"
 			<< " [-n numberOfEvent ]"
 			<< "\n or\n ./NP1 [macro.mac]"
 			<< G4endl;
@@ -57,7 +54,7 @@ int main(int argc,char** argv)
 
 	// Evaluate arguments
 	//
-	if ( argc > 10 ) {
+	if ( argc > 8 ) {
 		PrintUsage();
 		return 1;
 	}
@@ -118,10 +115,6 @@ int main(int argc,char** argv)
 	G4RunManager* runManager = new G4RunManager;
 #endif
 
-	// Activate UI-command base scorer
-	G4ScoringManager * scoringManager = G4ScoringManager::GetScoringManager();
-	scoringManager->SetVerboseLevel(1);
-
 	// Set mandatory initialization classes
 	//
 	// Detector construction
@@ -130,33 +123,12 @@ int main(int argc,char** argv)
 	// Physics list
 	//G4VModularPhysicsList* physicsList = new NP1PhysicsListFactory();
 	G4VModularPhysicsList* physicsList = new QGSP_BIC_HP();
-	physicsList->SetDefaultCutValue(1*mm);
+	physicsList->SetDefaultCutValue(0.01*um);
 	//physicsList->SetCutValue(4*um,"e-");
 	//physicsList->SetCutValue(4*um,"e+");
 	//physicsList->SetCutValue(4*um,"proton");
 	//physicsList->SetCutValue(0.01*mm,"gamma");
 	physicsList->DumpCutValuesTable();
-
-	G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();
-	if ( onOffBiasing == "on" )
-	{
-		//biasingPhysics->NonPhysicsBiasAllCharged();
-		biasingPhysics->Bias("gamma");
-		//biasingPhysics->NonPhysicsBias("gamma");
-		physicsList->RegisterPhysics(biasingPhysics);
-		G4cout << "      ********************************************************* " << G4endl;
-		G4cout << "      ********** processes are wrapped for biasing ************ " << G4endl;
-		G4cout << "      ********************************************************* " << G4endl;
-	}
-	else
-	{
-
-		NP1Control::GetInstance()->SetCSBiasFactor(1);
-
-		G4cout << "      ************************************************* " << G4endl;
-		G4cout << "      ********** processes are not wrapped ************ " << G4endl;
-		G4cout << "      ************************************************* " << G4endl;
-	}
 
 	runManager->SetUserInitialization(physicsList);
 

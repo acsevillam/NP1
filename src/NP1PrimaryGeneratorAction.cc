@@ -46,12 +46,8 @@ void NP1PrimaryGeneratorAction::SetSquareBeamTo(G4String aPhysicalVolumeName){
 
 	G4VPhysicalVolume* volume_phys = G4PhysicalVolumeStore::GetInstance()->GetVolume(aPhysicalVolumeName);
 	G4Box* volume_geo =(G4Box*) volume_phys->GetLogicalVolume()->GetSolid();
-	G4double margin = 50*nm;
 
-	G4double beam_dx = volume_geo->GetXHalfLength() + margin;
-	G4double beam_dy = volume_geo->GetYHalfLength() + margin;
-
-	fParticleSource->GetCurrentSource()->GetPosDist()->SetHalfX(beam_dx);
-	fParticleSource->GetCurrentSource()->GetPosDist()->SetHalfY(beam_dy);
+	fParticleSource->GetCurrentSource()->GetPosDist()->SetHalfX(volume_geo->GetXHalfLength());
+	fParticleSource->GetCurrentSource()->GetPosDist()->SetHalfY(volume_geo->GetYHalfLength());
 }
 

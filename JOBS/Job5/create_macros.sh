@@ -63,27 +63,31 @@ do
 		
 		s/%%BeamMacroFile%%/beam\/I-131_2.mac/g;
 		
-		s/%%Histo1D0X%%/100 ${sizesArray[$i]} 10000 nm/g;
+		s/%%Histo1D0X%%/100 0 10 um/g;
 		
 		s/%%Histo1D1X%%/100 0 100/g;
 		
-		s/%%Histo1D2X%%/100 ${sizesArray[$i]} 10000 nm/g;
+		s/%%Histo1D2X%%/100 0 10 um/g;
 		
 		s/%%Histo1D3X%%/100 0 100/g;
 		
 		s/%%Histo1D4X%%/1000 0 40 keV/g;
 		
-		s/%%Histo1D5X%%/1000 0 1000 microGy/g;
+		s/%%Histo1D5X%%/1000 0 10E-3 gray/g;
 		
-		s/%%Histo1D6X%%/20 0 20/g;
+		s/%%Histo1D6X%%/1000 0 40 keV/g;
 		
-		s/%%Histo1D7X%%/1000 0 40 keV/g;
+		s/%%Histo1D7X%%/1000 0 10E-3 gray/g;
 		
-		s/%%Histo1D8X%%/1000 0 40 keV/g;
+		s/%%Histo1D8X%%/20 0 20/g;
 		
-		s/%%Histo1D9X%%/1000 0 10 um/g;
+		s/%%Histo1D9X%%/1000 0 40 keV/g;
 		
-		s/%%Histo1D10X%%/1000 0 10 um/g;
+		s/%%Histo1D10X%%/1000 0 40 keV/g;
+		
+		s/%%Histo1D11X%%/1000 0 100 um/g;
+			
+		s/%%Histo1D12X%%/1000 0 100 um/g;
 		
 		" $TEMPLATE_DIR/template_1.mac > $JOB_DIR/mac/${sizesArray[$i]}nm.mac
 		

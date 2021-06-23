@@ -66,10 +66,6 @@ set(NP1_SCRIPTS
   mac/init.mac
   mac/single_nanoparticle.mac
   mac/multiple_nanoparticles.mac
-  beam/proton_100keV.mac
-  beam/proton_1MeV.mac
-  beam/proton_10MeV.mac
-  beam/proton_100MeV.mac
   beam/40keV.mac
   beam/RX40kVp.mac
   beam/RX100kVp.mac
@@ -79,6 +75,10 @@ set(NP1_SCRIPTS
   beam/x-ray-spectrum-geant4-180kV.dat
   beam/Co-60.mac
   beam/GammaAccelerator6MV.mac
+  beam/proton_100keV.mac
+  beam/proton_1MeV.mac
+  beam/proton_10MeV.mac
+  beam/proton_100MeV.mac
   beam/square_plane.mac
   beam/circular_plane.mac
   data/README

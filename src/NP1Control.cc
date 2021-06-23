@@ -34,7 +34,6 @@ NP1Control::NP1Control() {
 	fTrackingAction = NULL ;
 	fSteppingAction = NULL ;
 	fSensitiveDetectorAction = NULL ;
-	fCSBiasFactor=100000;
 }
 
 NP1Control::~NP1Control()

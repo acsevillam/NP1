@@ -28,6 +28,7 @@
 #include "NP1DetectorConstruction.hh"
 #include "NP1Control.hh"
 #include "G4VPhysicalVolume.hh"
+#include "G4EmCalculator.hh"
 
 using namespace std;
 
@@ -65,46 +66,116 @@ void NP1SteppingAction::UserSteppingAction(const G4Step* aStep)
 
 	if(!IsScoringVolume) return;
 
-	G4int TrackID						= aStep->GetTrack()->GetTrackID();
-	G4String ParticleName				= aStep->GetTrack()->GetDefinition()->GetParticleName();
-	G4double TotalEnergyDeposit 		= aStep->GetTotalEnergyDeposit();
-	G4double StepLength			 		= aStep->GetStepLength();
-	G4double KineticEnergy				= aStep->GetPreStepPoint()->GetKineticEnergy();
-	G4double mass						= currentVolume->GetMass();
-	G4double TotalDose					= TotalEnergyDeposit/mass;
-	G4double Position_r					= aStep->GetPreStepPoint()->GetPosition().r();
-	G4double CopyNo						= aStep->GetTrack()->GetTouchableHandle()->GetVolume(0)->GetCopyNo();
+	// Track
+	G4Track * theTrack = aStep -> GetTrack();
+	// Track ID
+	G4int trackID = aStep -> GetTrack() -> GetTrackID();
+	// Particle definition
+	G4ParticleDefinition* particleDef = theTrack->GetDefinition();
+	// Particle name
+	G4String ParticleName					= particleDef->GetParticleName();
+	// Atomic Number
+	G4int Z								    = particleDef-> GetAtomicNumber();
+	// Atomic Mass
+	G4int A									= particleDef-> GetAtomicMass();
+    // Get particle PDG code
+    G4int pdg = particleDef ->GetPDGEncoding();
+	// Mass
+	G4double mass							= currentVolume->GetMass();
+	// Total energy deposit
+	G4double TotalEnergyDeposit 	    	= aStep->GetTotalEnergyDeposit()*aStep->GetTrack()->GetWeight();
+	// Total dose
+	G4double TotalDose						= TotalEnergyDeposit/mass;
+	// Pre-step kinetic energy
+	G4double kinEPre = aStep -> GetPreStepPoint() -> GetKineticEnergy();
+	// Post-step kinetic energy
+	G4double kinEPost = aStep -> GetPostStepPoint() -> GetKineticEnergy();
+	// step Length
+	G4double stepLength = aStep -> GetStepLength();
+	// Water sphere array
+	G4double waterSphereArray_rmin 			= NP1Control::GetInstance()->GetShellsFrame_rmin();
+	// Position radial
+	G4double Position_r						= aStep->GetPreStepPoint()->GetPosition().r()-waterSphereArray_rmin;
+	// Copy number
+	G4double CopyNo							= aStep->GetTrack()->GetTouchableHandle()->GetVolume(0)->GetCopyNo();
 
 	if(!(TotalEnergyDeposit>0. || TotalDose>0. || aStep->GetNumberOfSecondariesInCurrentStep()>0)) return;
+
+	if ( !(Z==0 && A==1) ){ // All but not neutrons
+
+		if (pdg !=22 && pdg !=11) // not gamma and electrons
+		{
+
+			// Step average kinetic energy
+			G4double kinEMean = (kinEPre + kinEPost) * 0.5;
+			// Material
+			G4Material * mat = aStep -> GetPreStepPoint() -> GetMaterial();
+
+			// Get the secondary particles in current step
+			G4Step fstep = *theTrack -> GetStep();
+
+			// Store all the secondary particles in current step
+			const std::vector<const G4Track*> * secondary = fstep.GetSecondaryInCurrentStep();
+
+			size_t secondariesSize = (*secondary).size();
+			G4double secondariesEDep = 0.;
+
+			// Get secondary electrons energy deposited
+			if (secondariesSize)
+			{
+				for (size_t numsec = 0; numsec< secondariesSize ; numsec ++)
+				{
+					G4int secondaryPDGCode=(*secondary)[numsec]->GetDefinition()->GetPDGEncoding();
+
+					if(secondaryPDGCode == 11)
+					{
+						// Calculate the energy deposit of secondary electrons in current step
+						secondariesEDep += (*secondary)[numsec]->GetKineticEnergy();
+					}
+				}
+
+			}
+
+			// ICRU stopping power calculation
+			G4EmCalculator emCal;
+
+			// use the mean kinetic energy of ions in a step to calculate ICRU stopping power
+			G4double Lsn = emCal.ComputeElectronicDEDX(kinEMean, particleDef, mat);
+
+			fEventAction->AddLetN((secondariesEDep+TotalEnergyDeposit) * Lsn);
+			fEventAction->AddLetD(secondariesEDep+TotalEnergyDeposit);
+
+		}
+	}
 
 	// analysis manager
 	G4AnalysisManager* man = G4AnalysisManager::Instance();
 
 	if(LogicalVolumeAtVertexName=="particle_log" || LogicalVolumeAtVertexName=="particleCoating_log"){
 
-		if(TotalEnergyDeposit>0.){
-			man->FillH1(0,Position_r,TotalEnergyDeposit);
-			man->FillH1(1,CopyNo,TotalEnergyDeposit);
-		}
-		if(TotalDose>0.) {
-			man->FillH1(2,Position_r,TotalDose);
-			man->FillH1(3,CopyNo,TotalDose);
-		}
 		if(!fTrackingAction->GetSecondaryCountFlag()){
-			if(KineticEnergy>0.) man->FillH1(8,KineticEnergy);
+			if(kinEPre>0.) man->FillH1(10,kinEPre);
 			fTrackingAction->SetSecondaryCountFlag(true);
 		}
 
 	}
 
-	if(LogicalVolumeAtVertexName=="particle_log" || LogicalVolumeAtVertexName=="particleCoating_log"){
-		if(TotalEnergyDeposit>0.) fEventAction->AddSecondariesEdep(TotalEnergyDeposit);
+	fEventAction->AddTotalEdep(TotalEnergyDeposit);
 
+	if(trackID==1){
+		fEventAction->AddPrimaryTrackLength(stepLength);
 	}
-	if(TotalEnergyDeposit>0.){
-		fEventAction->AddTotalEdep(TotalEnergyDeposit);
-		if(TrackID==1) fEventAction->AddTrackLength(StepLength);
+
+	if(TotalEnergyDeposit>0. && (currentVolume->GetName()=="shell_log" )){
+		man->FillH1(0,Position_r,TotalEnergyDeposit/keV);
+		man->FillH1(1,CopyNo,TotalEnergyDeposit/keV);
 	}
+
+	if(TotalDose>0. && currentVolume->GetName()=="shell_log") {
+		man->FillH1(2,Position_r,TotalDose);
+		man->FillH1(3,CopyNo,TotalDose);
+	}
+
 
 
 }

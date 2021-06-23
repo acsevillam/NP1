@@ -21,14 +21,8 @@ void plotHisto(){
 	map<TString,TFile*> FileCollection;
 	map<TString,TFile*>::iterator FileCollectionIt;
 
-	//FileCollection["1"] 		= new TFile("data/run1.root");
-	//FileCollection["2"] 		= new TFile("data/run2.root");
-	FileCollection["Ag"] 		= new TFile("data/gamma_Ag_40keV.root");
-	FileCollection["Au"]		= new TFile("data/gamma_Au_40keV.root");
-	//FileCollection["Bi2S3"]	= new TFile("data/gamma_Bi2S3_40keV.root");
-	//FileCollection["Pb"]		= new TFile("data/gamma_Pb_40keV.root");
-	//FileCollection["Pt"]		= new TFile("data/gamma_Pt_40keV.root");
-	//FileCollection["Ta2O5"]	= new TFile("data/gamma_Ta2O5_40keV.root");
+	FileCollection["1"] 		= new TFile("data/NP1.root");
+
 
 	map<TString,Int_t> ColorCollection;
 
@@ -48,9 +42,9 @@ void plotHisto(){
 	VariableNameCollection[2]	="DepthEnergyDepositByElectronsPerGoodEvent2";
 	VariableNameCollection[3]	="DepthDoseByElectronsPerGoodEvents";
 	VariableNameCollection[4]	="DepthDoseByElectronsPerGoodEvents2";
-	VariableNameCollection[5]	="EnergyDepositByElectronsPerGoodEvent";
-	VariableNameCollection[6]	="DoseByElectronsPerGoodEvent";
-	VariableNameCollection[7]	="NumberOfElectronsPerGoodEvent";
+	VariableNameCollection[5]	="EnergyDepositPerGoodEvent";
+	VariableNameCollection[6]	="DosePerGoodEvent";
+	VariableNameCollection[7]	="NumberOfSecondariesPerGoodEvent";
 	VariableNameCollection[8]	="SecondariesSpectrumAtVertex";
 	VariableNameCollection[9]	="SecondariesSpectrumAtNPSurface";
 	VariableNameCollection[10]	="SecondariesTrackLength";

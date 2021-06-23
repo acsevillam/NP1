@@ -45,7 +45,7 @@ public :
 
 private:
     NP1EventAction*  fEventAction;
-    G4bool 			 fSecondaryCountFlag;
+    G4bool fSecondaryCountFlag;
 
 };
 

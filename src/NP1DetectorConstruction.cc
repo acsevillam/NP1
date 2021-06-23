@@ -38,7 +38,6 @@
 
 // NP1 Headers
 #include "NP1DetectorConstruction.hh"
-#include "NP1CrossSectionBasedBiasing.hh"
 #include "NP1Materials.hh"
 #include "NP1Control.hh"
 #include "NP1SVParameterisation.hh"
@@ -61,7 +60,7 @@ NP1DetectorConstruction::NP1DetectorConstruction()
 	fParticleCoatingMaterial = NP1Materials::GetInstance()->GetMaterial("G4_Gd");
 	fBoxMaterial = NP1Materials::GetInstance()->GetMaterial("G4_WATER");
 
-	NP1Control::GetInstance()->SetShellsNo(1);
+	NP1Control::GetInstance()->SetShellsNo(10);
 	fParticle_phys=0;
 	fParticleCoating_phys=0;
 	fParticleCoatingThickness=0*nm;
@@ -75,11 +74,9 @@ NP1DetectorConstruction::NP1DetectorConstruction()
 	fShellsFrame_phys=0;
 	fConcentration0=500*mg/g;
 	fConcentration=500*mg/g;
-	fWaterVoxel_dx= pow(fParticleMaterial->GetDensity()/fBoxMaterial->GetDensity()*4./3.*M_PI*pow(fParticleRadius,3)/fConcentration0,1/3.);
+	fWaterVoxel_dx= pow(fParticleMaterial->GetDensity()/fBoxMaterial->GetDensity()*4./3.*M_PI*pow(fParticleRadius,3)/fConcentration0,1/3.)/2.;
 	NP1Control::GetInstance()->SetShellsFrame_rmax(fWaterVoxel_dx);
-	fWaterPhantom_dx=1*mm;
-	fWaterPhantom_dy=1*mm;
-	fWaterPhantom_dz=1*cm;
+	fWaterPhantom_dx=0*um;
 	fVoxelsXNo=1;
 	fVoxelsYNo=1;
 	fVoxelsZNo=1;
@@ -177,10 +174,10 @@ void NP1DetectorConstruction::SetupGeometry(G4LogicalVolume* motherVolume){
 	if(fWaterPhantom_dx>=fVoxelsXNo*fWaterVoxel_dx) waterPhantom_dx = fWaterPhantom_dx;
 	else waterPhantom_dx = fVoxelsXNo*fWaterVoxel_dx;
 	G4double waterPhantom_dy;
-	if(fWaterPhantom_dy>=fVoxelsYNo*fWaterVoxel_dx) waterPhantom_dy = fWaterPhantom_dy;
+	if(fWaterPhantom_dx>=fVoxelsYNo*fWaterVoxel_dx) waterPhantom_dy = fWaterPhantom_dx;
 	else waterPhantom_dy = fVoxelsYNo*fWaterVoxel_dx;
 	G4double waterPhantom_dz;
-	if(fWaterPhantom_dz>=fVoxelsZNo*fWaterVoxel_dx) waterPhantom_dz = fWaterPhantom_dz;
+	if(fWaterPhantom_dx>=fVoxelsZNo*fWaterVoxel_dx) waterPhantom_dz = fWaterPhantom_dx;
 	else waterPhantom_dz = fVoxelsZNo*fWaterVoxel_dx;
 
 	G4VSolid* waterPhantom_geo = new G4Box("waterPhantom_geo", waterPhantom_dx, waterPhantom_dy, waterPhantom_dz);
@@ -198,7 +195,7 @@ void NP1DetectorConstruction::SetupGeometry(G4LogicalVolume* motherVolume){
 	G4LogicalVolume* particleCoating_log = new G4LogicalVolume(particleCoating_geo,fParticleMaterial,"particleCoating_log");
 
 	G4VisAttributes* simpleParticleCoatingSVisAtt;
-	simpleParticleCoatingSVisAtt= new G4VisAttributes(G4Colour(1.0,0.0,0.0,0.5));
+	simpleParticleCoatingSVisAtt= new G4VisAttributes(G4Colour(1.0,1.0,0.0,0.5));
 	simpleParticleCoatingSVisAtt->SetVisibility(true);
 
 	particleCoating_log -> SetVisAttributes(simpleParticleCoatingSVisAtt);
@@ -225,8 +222,9 @@ void NP1DetectorConstruction::SetupGeometry(G4LogicalVolume* motherVolume){
 	G4LogicalVolume* shell_log = new G4LogicalVolume(shell_geo, fBoxMaterial, "shell_log");
 
 	G4VisAttributes* simpleShellSVisAtt;
-	simpleShellSVisAtt= new G4VisAttributes(G4Colour(0.,0.5,0.5,0.01));
+	simpleShellSVisAtt= new G4VisAttributes(G4Colour(0.,0.0,1,0.01));
 	simpleShellSVisAtt->SetVisibility(false);
+	//simpleShellSVisAtt->SetForceWireframe(true);
 
 	shell_log->SetVisAttributes(simpleShellSVisAtt);
 
@@ -242,7 +240,7 @@ void NP1DetectorConstruction::SetupGeometry(G4LogicalVolume* motherVolume){
 	G4LogicalVolume * waterVoxel_log = new G4LogicalVolume(waterVoxel_geo, fBoxMaterial, "waterVoxel_log");
 
 	G4VisAttributes* simpleWaterVoxelVisAtt;
-	simpleWaterVoxelVisAtt= new G4VisAttributes(G4Colour(0.,0.5,0.5,0.2));
+	simpleWaterVoxelVisAtt= new G4VisAttributes(G4Colour(0.,0.0,1.,0.3));
 	simpleWaterVoxelVisAtt->SetVisibility(false);
 
 	waterVoxel_log -> SetVisAttributes(simpleWaterVoxelVisAtt);
@@ -253,7 +251,7 @@ void NP1DetectorConstruction::SetupGeometry(G4LogicalVolume* motherVolume){
 	G4LogicalVolume * waterBox_log = new G4LogicalVolume(waterBox_geo, fBoxMaterial, "waterBox_log");
 
 	G4VisAttributes* simpleWaterBoxVisAtt;
-	simpleWaterBoxVisAtt= new G4VisAttributes(G4Colour(0.,0.5,0.5,0.2));
+	simpleWaterBoxVisAtt= new G4VisAttributes(G4Colour(0.,0.0,1.,0.3));
 	simpleWaterBoxVisAtt->SetVisibility(true);
 
 	waterBox_log -> SetVisAttributes(simpleWaterBoxVisAtt);
@@ -264,7 +262,7 @@ void NP1DetectorConstruction::SetupGeometry(G4LogicalVolume* motherVolume){
 	G4LogicalVolume * waterPhantom_log = new G4LogicalVolume(waterPhantom_geo, fBoxMaterial, "waterPhantom_log");
 
 	G4VisAttributes* simpleWaterPhantomVisAtt;
-	simpleWaterPhantomVisAtt= new G4VisAttributes(G4Colour(0.,0.5,0.5,0.2));
+	simpleWaterPhantomVisAtt= new G4VisAttributes(G4Colour(0.,0.0,1.,0.3));
 	simpleWaterPhantomVisAtt->SetVisibility(true);
 
 	waterPhantom_log -> SetVisAttributes(simpleWaterPhantomVisAtt);
@@ -341,48 +339,29 @@ void NP1DetectorConstruction::SetupGeometry(G4LogicalVolume* motherVolume){
 	}
 
 	// Water box
-	fWaterBox_phys = new G4PVPlacement(0,                   	//no rotation
-			G4ThreeVector(0,0,-(waterPhantom_dz-waterBox_dz)), 	//at (0,0,0)
-			waterBox_log,                   	 	 			//its logical volume
-			"waterBox_phys",                      				//its name
-			waterPhantom_log,              						//its mother  volume
-			false,                                          	//no boolean operation
-			0,                                              	//copy number
-			true);                                          	//overlaps checking
+	fWaterBox_phys = new G4PVPlacement(0,                   //no rotation
+			G4ThreeVector(),                                //at (0,0,0)
+			waterBox_log,                   	 	 		//its logical volume
+			"waterBox_phys",                      			//its name
+			waterPhantom_log,              					//its mother  volume
+			false,                                          //no boolean operation
+			0,                                              //copy number
+			true);                                          //overlaps checking
 
 	// Water phantom
-	fWaterPhantom_phys = new G4PVPlacement(0,              		//no rotation
-			G4ThreeVector(0,0,waterPhantom_dz),             	//at (0,0,0)
-			waterPhantom_log,                   	 	 		//its logical volume
-			"waterPhantom_phys",                      			//its name
-			motherVolume,                 						//its mother  volume
-			false,                                          	//no boolean operation
-			0,                                              	//copy number
-			true);                                          	//overlaps checking
+	fWaterPhantom_phys = new G4PVPlacement(0,               //no rotation
+			G4ThreeVector(),                                //at (0,0,0)
+			waterPhantom_log,                   	 	 	//its logical volume
+			"waterPhantom_phys",                      		//its name
+			motherVolume,                 					//its mother  volume
+			false,                                          //no boolean operation
+			0,                                              //copy number
+			true);                                          //overlaps checking
 
 }
 
 void NP1DetectorConstruction::ConstructSDandField()
-{
-	SetupBiasing();
-}
-
-void NP1DetectorConstruction::SetupBiasing()
-{
-
-	  // -- Fetch volume for biasing:
-	  G4LogicalVolume* particle_log = G4LogicalVolumeStore::GetInstance()->GetVolume("particle_log");
-
-	  // ----------------------------------------------
-	  // -- operator creation and attachment to volume:
-	  // ----------------------------------------------
-	  NP1CrossSectionBasedBiasing* biasingOperator = new NP1CrossSectionBasedBiasing();
-	  biasingOperator->AddParticle("gamma");
-	  biasingOperator->AddParticle("neutron");
-	  biasingOperator->AttachTo(particle_log);
-	  G4cout << " Attaching biasing operator " << biasingOperator->GetName() << " to logical volume " << particle_log->GetName() << G4endl;
-
-}
+{}
 
 void NP1DetectorConstruction::SetNanoParticleRadius(G4double aRadius){
 
@@ -400,28 +379,23 @@ void NP1DetectorConstruction::SetNanoParticleRadius(G4double aRadius){
 	particle_geo->SetRadius(aRadius-fParticleCoatingThickness);
 
 	// Setting particle coating radius
+	NP1Control::GetInstance()->SetShellsFrame_rmin(fParticleRadius);
 	G4Orb* particleCoating_geo = (G4Orb*) this->fParticleCoating_phys->GetLogicalVolume()->GetSolid();
 	particleCoating_geo->SetRadius(aRadius);
 
-
 	// Setting voxel side length
-	fWaterVoxel_dx= pow(fParticleMaterial->GetDensity()/fBoxMaterial->GetDensity()*4./3.*M_PI*pow(fParticleRadius,3)/fConcentration0,1/3.);
-	NP1Control::GetInstance()->SetShellsFrame_rmax(fWaterVoxel_dx);
 	G4Box* waterVoxel_geo = (G4Box*) this->fWaterVoxel_phys->GetLogicalVolume()->GetSolid();
 	waterVoxel_geo->SetXHalfLength(fWaterVoxel_dx);
 	waterVoxel_geo->SetYHalfLength(fWaterVoxel_dx);
 	waterVoxel_geo->SetZHalfLength(fWaterVoxel_dx);
 
 	// Setting water box side length
+	fWaterVoxel_dx= pow(fParticleMaterial->GetDensity()/fBoxMaterial->GetDensity()*4./3.*M_PI*pow(fParticleRadius,3)/fConcentration,1/3.)/2.;
+	NP1Control::GetInstance()->SetShellsFrame_rmax(fWaterVoxel_dx);
 	G4Box* waterBox_geo = (G4Box*) this->fWaterBox_phys->GetLogicalVolume()->GetSolid();
-
-	G4double waterBox_dx = fWaterVoxel_dx*fVoxelsXNo;
-	G4double waterBox_dy = fWaterVoxel_dx*fVoxelsYNo;
-	G4double waterBox_dz = fWaterVoxel_dx*fVoxelsZNo;
-
-	waterBox_geo->SetXHalfLength(waterBox_dx);
-	waterBox_geo->SetYHalfLength(waterBox_dy);
-	waterBox_geo->SetZHalfLength(waterBox_dz);
+	waterBox_geo->SetXHalfLength(fWaterVoxel_dx*fVoxelsXNo);
+	waterBox_geo->SetYHalfLength(fWaterVoxel_dx*fVoxelsYNo);
+	waterBox_geo->SetZHalfLength(fWaterVoxel_dx*fVoxelsZNo);
 
 	// Setting water phantom side length
 	G4Box* waterPhantom_geo = (G4Box*) this->fWaterPhantom_phys->GetLogicalVolume()->GetSolid();
@@ -430,19 +404,16 @@ void NP1DetectorConstruction::SetNanoParticleRadius(G4double aRadius){
 	if(fWaterPhantom_dx>=fVoxelsXNo*fWaterVoxel_dx) waterPhantom_dx = fWaterPhantom_dx;
 	else waterPhantom_dx = fVoxelsXNo*fWaterVoxel_dx;
 	G4double waterPhantom_dy;
-	if(fWaterPhantom_dy>=fVoxelsYNo*fWaterVoxel_dx) waterPhantom_dy = fWaterPhantom_dy;
+	if(fWaterPhantom_dx>=fVoxelsYNo*fWaterVoxel_dx) waterPhantom_dy = fWaterPhantom_dx;
 	else waterPhantom_dy = fVoxelsYNo*fWaterVoxel_dx;
 	G4double waterPhantom_dz;
-	if(fWaterPhantom_dz>=fVoxelsZNo*fWaterVoxel_dx) waterPhantom_dz = fWaterPhantom_dz;
+	if(fWaterPhantom_dx>=fVoxelsZNo*fWaterVoxel_dx) waterPhantom_dz = fWaterPhantom_dx;
 	else waterPhantom_dz = fVoxelsZNo*fWaterVoxel_dx;
 
 	waterPhantom_geo->SetXHalfLength(waterPhantom_dx);
 	waterPhantom_geo->SetYHalfLength(waterPhantom_dy);
 	waterPhantom_geo->SetZHalfLength(waterPhantom_dz);
 
-	// Translate water phantom and box
-	this->fWaterBox_phys->SetTranslation(G4ThreeVector(0,0,-(waterPhantom_dz-waterBox_dz)));
-	this->fWaterPhantom_phys->SetTranslation(G4ThreeVector(0,0,waterPhantom_dz));
 
 	// Setting voxels postition inside water box
 	fWaterBox_phys->GetLogicalVolume()->ClearDaughters();
@@ -571,6 +542,7 @@ void NP1DetectorConstruction::SetWaterVoxel_dx(G4double aDx){
 
 	fWaterVoxel_dx=aDx/2.+fParticleRadius;
 
+
 	// Open geometry for the physical volume to be modified ...
 	//
 	geoman->OpenGeometry(fWaterBox_phys);
@@ -584,14 +556,9 @@ void NP1DetectorConstruction::SetWaterVoxel_dx(G4double aDx){
 	// Setting water box side length
 	NP1Control::GetInstance()->SetShellsFrame_rmax(fWaterVoxel_dx);
 	G4Box* waterBox_geo = (G4Box*) this->fWaterBox_phys->GetLogicalVolume()->GetSolid();
-
-	G4double waterBox_dx = fWaterVoxel_dx*fVoxelsXNo;
-	G4double waterBox_dy = fWaterVoxel_dx*fVoxelsYNo;
-	G4double waterBox_dz = fWaterVoxel_dx*fVoxelsZNo;
-
-	waterBox_geo->SetXHalfLength(waterBox_dx);
-	waterBox_geo->SetYHalfLength(waterBox_dy);
-	waterBox_geo->SetZHalfLength(waterBox_dz);
+	waterBox_geo->SetXHalfLength(fWaterVoxel_dx*fVoxelsXNo);
+	waterBox_geo->SetYHalfLength(fWaterVoxel_dx*fVoxelsYNo);
+	waterBox_geo->SetZHalfLength(fWaterVoxel_dx*fVoxelsZNo);
 
 	// Setting water phantom side length
 	G4Box* waterPhantom_geo = (G4Box*) this->fWaterPhantom_phys->GetLogicalVolume()->GetSolid();
@@ -600,19 +567,16 @@ void NP1DetectorConstruction::SetWaterVoxel_dx(G4double aDx){
 	if(fWaterPhantom_dx>=fVoxelsXNo*fWaterVoxel_dx) waterPhantom_dx = fWaterPhantom_dx;
 	else waterPhantom_dx = fVoxelsXNo*fWaterVoxel_dx;
 	G4double waterPhantom_dy;
-	if(fWaterPhantom_dy>=fVoxelsYNo*fWaterVoxel_dx) waterPhantom_dy = fWaterPhantom_dy;
+	if(fWaterPhantom_dx>=fVoxelsYNo*fWaterVoxel_dx) waterPhantom_dy = fWaterPhantom_dx;
 	else waterPhantom_dy = fVoxelsYNo*fWaterVoxel_dx;
 	G4double waterPhantom_dz;
-	if(fWaterPhantom_dz>=fVoxelsZNo*fWaterVoxel_dx) waterPhantom_dz = fWaterPhantom_dz;
+	if(fWaterPhantom_dx>=fVoxelsZNo*fWaterVoxel_dx) waterPhantom_dz = fWaterPhantom_dx;
 	else waterPhantom_dz = fVoxelsZNo*fWaterVoxel_dx;
 
 	waterPhantom_geo->SetXHalfLength(waterPhantom_dx);
 	waterPhantom_geo->SetYHalfLength(waterPhantom_dy);
 	waterPhantom_geo->SetZHalfLength(waterPhantom_dz);
 
-	// Translate water phantom and box
-	this->fWaterBox_phys->SetTranslation(G4ThreeVector(0,0,-(waterPhantom_dz-waterBox_dz)));
-	this->fWaterPhantom_phys->SetTranslation(G4ThreeVector(0,0,waterPhantom_dz));
 
 	// Setting voxels postition inside water box
 	fWaterBox_phys->GetLogicalVolume()->ClearDaughters();
@@ -689,14 +653,9 @@ void NP1DetectorConstruction::SetVoxelsXNo(G4int aXNo){
 
 	// Setting water box side length
 	G4Box* waterBox_geo = (G4Box*) this->fWaterBox_phys->GetLogicalVolume()->GetSolid();
-
-	G4double waterBox_dx = fWaterVoxel_dx*fVoxelsXNo;
-	G4double waterBox_dy = fWaterVoxel_dx*fVoxelsYNo;
-	G4double waterBox_dz = fWaterVoxel_dx*fVoxelsZNo;
-
-	waterBox_geo->SetXHalfLength(waterBox_dx);
-	waterBox_geo->SetYHalfLength(waterBox_dy);
-	waterBox_geo->SetZHalfLength(waterBox_dz);
+	waterBox_geo->SetXHalfLength(fWaterVoxel_dx*fVoxelsXNo);
+	waterBox_geo->SetYHalfLength(fWaterVoxel_dx*fVoxelsYNo);
+	waterBox_geo->SetZHalfLength(fWaterVoxel_dx*fVoxelsZNo);
 
 	// Setting water phantom side length
 	G4Box* waterPhantom_geo = (G4Box*) this->fWaterPhantom_phys->GetLogicalVolume()->GetSolid();
@@ -705,19 +664,15 @@ void NP1DetectorConstruction::SetVoxelsXNo(G4int aXNo){
 	if(fWaterPhantom_dx>=fVoxelsXNo*fWaterVoxel_dx) waterPhantom_dx = fWaterPhantom_dx;
 	else waterPhantom_dx = fVoxelsXNo*fWaterVoxel_dx;
 	G4double waterPhantom_dy;
-	if(fWaterPhantom_dy>=fVoxelsYNo*fWaterVoxel_dx) waterPhantom_dy = fWaterPhantom_dy;
+	if(fWaterPhantom_dx>=fVoxelsYNo*fWaterVoxel_dx) waterPhantom_dy = fWaterPhantom_dx;
 	else waterPhantom_dy = fVoxelsYNo*fWaterVoxel_dx;
 	G4double waterPhantom_dz;
-	if(fWaterPhantom_dz>=fVoxelsZNo*fWaterVoxel_dx) waterPhantom_dz = fWaterPhantom_dz;
+	if(fWaterPhantom_dx>=fVoxelsZNo*fWaterVoxel_dx) waterPhantom_dz = fWaterPhantom_dx;
 	else waterPhantom_dz = fVoxelsZNo*fWaterVoxel_dx;
 
 	waterPhantom_geo->SetXHalfLength(waterPhantom_dx);
 	waterPhantom_geo->SetYHalfLength(waterPhantom_dy);
 	waterPhantom_geo->SetZHalfLength(waterPhantom_dz);
-
-	// Translate water phantom and box
-	this->fWaterBox_phys->SetTranslation(G4ThreeVector(0,0,-(waterPhantom_dz-waterBox_dz)));
-	this->fWaterPhantom_phys->SetTranslation(G4ThreeVector(0,0,waterPhantom_dz));
 
 	// Setting voxels postition inside water box
 	fWaterBox_phys->GetLogicalVolume()->ClearDaughters();
@@ -769,14 +724,9 @@ void NP1DetectorConstruction::SetVoxelsYNo(G4int aYNo){
 
 	// Setting water box side length
 	G4Box* waterBox_geo = (G4Box*) this->fWaterBox_phys->GetLogicalVolume()->GetSolid();
-
-	G4double waterBox_dx = fWaterVoxel_dx*fVoxelsXNo;
-	G4double waterBox_dy = fWaterVoxel_dx*fVoxelsYNo;
-	G4double waterBox_dz = fWaterVoxel_dx*fVoxelsZNo;
-
-	waterBox_geo->SetXHalfLength(waterBox_dx);
-	waterBox_geo->SetYHalfLength(waterBox_dy);
-	waterBox_geo->SetZHalfLength(waterBox_dz);
+	waterBox_geo->SetXHalfLength(fWaterVoxel_dx*fVoxelsXNo);
+	waterBox_geo->SetYHalfLength(fWaterVoxel_dx*fVoxelsYNo);
+	waterBox_geo->SetZHalfLength(fWaterVoxel_dx*fVoxelsZNo);
 
 	// Setting water phantom side length
 	G4Box* waterPhantom_geo = (G4Box*) this->fWaterPhantom_phys->GetLogicalVolume()->GetSolid();
@@ -785,19 +735,15 @@ void NP1DetectorConstruction::SetVoxelsYNo(G4int aYNo){
 	if(fWaterPhantom_dx>=fVoxelsXNo*fWaterVoxel_dx) waterPhantom_dx = fWaterPhantom_dx;
 	else waterPhantom_dx = fVoxelsXNo*fWaterVoxel_dx;
 	G4double waterPhantom_dy;
-	if(fWaterPhantom_dy>=fVoxelsYNo*fWaterVoxel_dx) waterPhantom_dy = fWaterPhantom_dy;
+	if(fWaterPhantom_dx>=fVoxelsYNo*fWaterVoxel_dx) waterPhantom_dy = fWaterPhantom_dx;
 	else waterPhantom_dy = fVoxelsYNo*fWaterVoxel_dx;
 	G4double waterPhantom_dz;
-	if(fWaterPhantom_dz>=fVoxelsZNo*fWaterVoxel_dx) waterPhantom_dz = fWaterPhantom_dz;
+	if(fWaterPhantom_dx>=fVoxelsZNo*fWaterVoxel_dx) waterPhantom_dz = fWaterPhantom_dx;
 	else waterPhantom_dz = fVoxelsZNo*fWaterVoxel_dx;
 
 	waterPhantom_geo->SetXHalfLength(waterPhantom_dx);
 	waterPhantom_geo->SetYHalfLength(waterPhantom_dy);
 	waterPhantom_geo->SetZHalfLength(waterPhantom_dz);
-
-	// Translate water phantom and box
-	this->fWaterBox_phys->SetTranslation(G4ThreeVector(0,0,-(waterPhantom_dz-waterBox_dz)));
-	this->fWaterPhantom_phys->SetTranslation(G4ThreeVector(0,0,waterPhantom_dz));
 
 	// Setting voxels postition inside water box
 	fWaterBox_phys->GetLogicalVolume()->ClearDaughters();
@@ -850,14 +796,9 @@ void NP1DetectorConstruction::SetVoxelsZNo(G4int aZNo){
 
 	// Setting water box side length
 	G4Box* waterBox_geo = (G4Box*) this->fWaterBox_phys->GetLogicalVolume()->GetSolid();
-
-	G4double waterBox_dx = fWaterVoxel_dx*fVoxelsXNo;
-	G4double waterBox_dy = fWaterVoxel_dx*fVoxelsYNo;
-	G4double waterBox_dz = fWaterVoxel_dx*fVoxelsZNo;
-
-	waterBox_geo->SetXHalfLength(waterBox_dx);
-	waterBox_geo->SetYHalfLength(waterBox_dy);
-	waterBox_geo->SetZHalfLength(waterBox_dz);
+	waterBox_geo->SetXHalfLength(fWaterVoxel_dx*fVoxelsXNo);
+	waterBox_geo->SetYHalfLength(fWaterVoxel_dx*fVoxelsYNo);
+	waterBox_geo->SetZHalfLength(fWaterVoxel_dx*fVoxelsZNo);
 
 	// Setting water phantom side length
 	G4Box* waterPhantom_geo = (G4Box*) this->fWaterPhantom_phys->GetLogicalVolume()->GetSolid();
@@ -866,19 +807,15 @@ void NP1DetectorConstruction::SetVoxelsZNo(G4int aZNo){
 	if(fWaterPhantom_dx>=fVoxelsXNo*fWaterVoxel_dx) waterPhantom_dx = fWaterPhantom_dx;
 	else waterPhantom_dx = fVoxelsXNo*fWaterVoxel_dx;
 	G4double waterPhantom_dy;
-	if(fWaterPhantom_dy>=fVoxelsYNo*fWaterVoxel_dx) waterPhantom_dy = fWaterPhantom_dy;
+	if(fWaterPhantom_dx>=fVoxelsYNo*fWaterVoxel_dx) waterPhantom_dy = fWaterPhantom_dx;
 	else waterPhantom_dy = fVoxelsYNo*fWaterVoxel_dx;
 	G4double waterPhantom_dz;
-	if(fWaterPhantom_dz>=fVoxelsZNo*fWaterVoxel_dx) waterPhantom_dz = fWaterPhantom_dz;
+	if(fWaterPhantom_dx>=fVoxelsZNo*fWaterVoxel_dx) waterPhantom_dz = fWaterPhantom_dx;
 	else waterPhantom_dz = fVoxelsZNo*fWaterVoxel_dx;
 
 	waterPhantom_geo->SetXHalfLength(waterPhantom_dx);
 	waterPhantom_geo->SetYHalfLength(waterPhantom_dy);
 	waterPhantom_geo->SetZHalfLength(waterPhantom_dz);
-
-	// Translate water phantom and box
-	this->fWaterBox_phys->SetTranslation(G4ThreeVector(0,0,-(waterPhantom_dz-waterBox_dz)));
-	this->fWaterPhantom_phys->SetTranslation(G4ThreeVector(0,0,waterPhantom_dz));
 
 	// Setting voxels postition inside water box
 	fWaterBox_phys->GetLogicalVolume()->ClearDaughters();
@@ -923,6 +860,11 @@ void NP1DetectorConstruction::SetConcentration0(G4double aConcentration){
 	G4GeometryManager* geoman = G4GeometryManager::GetInstance() ;
 
 	fConcentration0=aConcentration;
+	fWaterVoxel_dx= pow(fParticleMaterial->GetDensity()/fBoxMaterial->GetDensity()*4./3.*M_PI*pow(fParticleRadius,3)/fConcentration0,1/3.)/2.;
+
+	G4cout<<"Voxel side lenght: "<<G4BestUnit(fWaterVoxel_dx*2.,"Length")<<G4endl;
+	G4cout<<"NP material density: "<<fParticleMaterial->GetDensity()/(g/cm3)<<" g/cm3"<<G4endl;
+	G4cout<<"NP material density: "<<fParticleMaterial->GetDensity()/(g/cm3)<<" g/cm3"<<G4endl;
 
 	// Open geometry for the physical volume to be modified ...
 	//
@@ -935,17 +877,11 @@ void NP1DetectorConstruction::SetConcentration0(G4double aConcentration){
 	waterVoxel_geo->SetZHalfLength(fWaterVoxel_dx);
 
 	// Setting water box side length
-	fWaterVoxel_dx= pow(fParticleMaterial->GetDensity()/fBoxMaterial->GetDensity()*4./3.*M_PI*pow(fParticleRadius,3)/fConcentration0,1/3.);
 	NP1Control::GetInstance()->SetShellsFrame_rmax(fWaterVoxel_dx);
 	G4Box* waterBox_geo = (G4Box*) this->fWaterBox_phys->GetLogicalVolume()->GetSolid();
-
-	G4double waterBox_dx = fWaterVoxel_dx*fVoxelsXNo;
-	G4double waterBox_dy = fWaterVoxel_dx*fVoxelsYNo;
-	G4double waterBox_dz = fWaterVoxel_dx*fVoxelsZNo;
-
-	waterBox_geo->SetXHalfLength(waterBox_dx);
-	waterBox_geo->SetYHalfLength(waterBox_dy);
-	waterBox_geo->SetZHalfLength(waterBox_dz);
+	waterBox_geo->SetXHalfLength(fWaterVoxel_dx*fVoxelsXNo);
+	waterBox_geo->SetYHalfLength(fWaterVoxel_dx*fVoxelsYNo);
+	waterBox_geo->SetZHalfLength(fWaterVoxel_dx*fVoxelsZNo);
 
 	// Setting water phantom side length
 	G4Box* waterPhantom_geo = (G4Box*) this->fWaterPhantom_phys->GetLogicalVolume()->GetSolid();
@@ -954,19 +890,15 @@ void NP1DetectorConstruction::SetConcentration0(G4double aConcentration){
 	if(fWaterPhantom_dx>=fVoxelsXNo*fWaterVoxel_dx) waterPhantom_dx = fWaterPhantom_dx;
 	else waterPhantom_dx = fVoxelsXNo*fWaterVoxel_dx;
 	G4double waterPhantom_dy;
-	if(fWaterPhantom_dy>=fVoxelsYNo*fWaterVoxel_dx) waterPhantom_dy = fWaterPhantom_dy;
+	if(fWaterPhantom_dx>=fVoxelsYNo*fWaterVoxel_dx) waterPhantom_dy = fWaterPhantom_dx;
 	else waterPhantom_dy = fVoxelsYNo*fWaterVoxel_dx;
 	G4double waterPhantom_dz;
-	if(fWaterPhantom_dz>=fVoxelsZNo*fWaterVoxel_dx) waterPhantom_dz = fWaterPhantom_dz;
+	if(fWaterPhantom_dx>=fVoxelsZNo*fWaterVoxel_dx) waterPhantom_dz = fWaterPhantom_dx;
 	else waterPhantom_dz = fVoxelsZNo*fWaterVoxel_dx;
 
 	waterPhantom_geo->SetXHalfLength(waterPhantom_dx);
 	waterPhantom_geo->SetYHalfLength(waterPhantom_dy);
 	waterPhantom_geo->SetZHalfLength(waterPhantom_dz);
-
-	// Translate water phantom and box
-	this->fWaterBox_phys->SetTranslation(G4ThreeVector(0,0,-(waterPhantom_dz-waterBox_dz)));
-	this->fWaterPhantom_phys->SetTranslation(G4ThreeVector(0,0,waterPhantom_dz));
 
 	// Setting voxels postition inside water box
 	fWaterBox_phys->GetLogicalVolume()->ClearDaughters();

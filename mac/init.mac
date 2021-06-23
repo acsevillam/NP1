@@ -48,4 +48,9 @@
 # ==================== Setup settings ==================
 
 /control/execute mac/multiple_nanoparticles.mac
+/vis/viewer/zoomTo 100000
+
 #/control/execute mac/single_nanoparticle.mac
+#/vis/viewer/zoomTo 100000
+
+/run/printProgress 100

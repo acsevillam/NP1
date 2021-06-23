@@ -43,36 +43,21 @@ class NP1RunAction : public G4UserRunAction
     void CreateHistos();
     void CreateNTuples();
 
-    void CountGoodEvent(){ fGoodEvents++; };
-    void CountEdepEvent(){ fEDepEvents++; };
+    inline void CountEdepEvent(){ fEDepEvents++; };
     inline void AddTotalEdep(G4double Edep) {fTotalEdep+=Edep; fTotalEdep2+=Edep*Edep;}
-    inline void SetTotalEdepLimits(G4double EdepMin,G4double EdepMax){fTotalEdepMin=EdepMin; fTotalEdepMax=EdepMax;}
-    inline void AddSecondariesEdep(G4double Edep) {fSecondariesEdep+=Edep; fSecondariesEdep2+=Edep*Edep;}
-    inline void SetSecondariesEdepLimits(G4double EdepMin,G4double EdepMax){fSecondariesEdepMin=EdepMin; fSecondariesEdepMax=EdepMax;}
-    inline void CountSecondaries(G4double numberOfSecondaries) { fNumberOfSecondaries += numberOfSecondaries; fNumberOfSecondaries2 += numberOfSecondaries*numberOfSecondaries;  };
-    inline void SetSecondariesNoLimits(G4double NumberOfSecondariesMin,G4double NumberOfSecondariesMax){fNumberOfSecondariesMin=NumberOfSecondariesMin; fNumberOfSecondariesMax=NumberOfSecondariesMax;}
-    inline void AddTrackLength(G4double trackLength) {fTrackLength+=trackLength; fTrackLength2+=trackLength*trackLength;}
-    inline void SetTrackLengthLimits(G4double trackLengthMin,G4double trackLengthMax){fTrackLengthMin=trackLengthMin; fTrackLengthMax=trackLengthMax;}
+    inline void AddPrimaryTrackLength(G4double TrackLength) {fPrimaryTrackLength+=TrackLength; fPrimaryTrackLength2+=TrackLength*TrackLength;}
+    inline void AddLet(G4double Let) {fLet+=Let; fLet2+=Let*Let;}
+    inline void CountGoodEvent(G4double goodEvents){ fGoodEvents += goodEvents; };
 
 private:
     G4Accumulable<G4int>    			fEDepEvents;
-    G4Accumulable<G4int>    			fGoodEvents;
+    G4Accumulable<G4double>    			fGoodEvents;
     G4Accumulable<G4double>     		fTotalEdep;
     G4Accumulable<G4double>	   			fTotalEdep2;
-    G4double							fTotalEdepMin;
-    G4double							fTotalEdepMax;
-    G4Accumulable<G4double>     		fSecondariesEdep;
-    G4Accumulable<G4double>	   			fSecondariesEdep2;
-    G4double							fSecondariesEdepMin;
-    G4double							fSecondariesEdepMax;
-    G4Accumulable<G4int> 				fNumberOfSecondaries;
-    G4Accumulable<G4int>				fNumberOfSecondaries2;
-    G4double							fNumberOfSecondariesMin;
-    G4double							fNumberOfSecondariesMax;
-    G4Accumulable<G4double>				fTrackLength;
-    G4Accumulable<G4double>				fTrackLength2;
-    G4double							fTrackLengthMin;
-    G4double							fTrackLengthMax;
+    G4Accumulable<G4double>     		fPrimaryTrackLength;
+    G4Accumulable<G4double>	   			fPrimaryTrackLength2;
+    G4Accumulable<G4double>     		fLet;
+    G4Accumulable<G4double>	   			fLet2;
 
 };
 

@@ -15,11 +15,11 @@
 
 //NP1 Headers
 #include "NP1TrackingAction.hh"
-#include "NP1RunAction.hh"
 #include "NP1ActionInitialization.hh"
 #include "NP1PrimaryGeneratorAction.hh"
 #include "NP1EventAction.hh"
 #include "NP1SteppingAction.hh"
+#include "NP1RunAction.hh"
 //#include "NP1SensitiveVolumeAction.hh"
 
 NP1ActionInitialization::NP1ActionInitialization()
